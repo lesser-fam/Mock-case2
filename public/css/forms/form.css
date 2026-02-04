@@ -1,0 +1,84 @@
+/* ===== フォーム形式 =====*/
+.form__heading {
+    text-align: center;
+    margin: var(--space-xxl) auto;
+    font-size: var(--font-xl);
+}
+
+.form {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.form__group {
+    margin-bottom: var(--space-m);
+}
+
+.form__label,
+.btn {
+    font-size: var(--font-m);
+}
+
+.form__input,
+.form__link,
+.form__error {
+    font-size: var(--font-s);
+}
+
+.form__label {
+    font-weight: bold;
+    text-align: left;
+    margin-bottom: var(--space-xs);
+}
+
+.form__input {
+    width: 100%;
+    padding: var(--space-s) var(--space-xs);
+    border: 1px solid black;
+    border-radius: 2px;
+}
+
+.form__link {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin: var(--space-s) auto var(--space-xs);
+}
+
+.form__error:empty {
+    display: none;
+}
+
+.form__error {
+    color: #ffffff;
+    margin-top: var(--space-xs);
+    background-color: #f05550;
+}
+
+.btn {
+    display: inline-block;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn--primary {
+    width: 100%;
+    padding: var(--space-s) 0;
+    color: #fff;
+    font-size: var(--font-m);
+    background-color: #f05550;
+    border: none;
+    text-decoration: none;
+}
+
+@media screen and (max-width: 850px) {
+    .form__heading {
+        margin: var(--space-l) auto;
+    }
+
+    .form {
+        max-width: 400px;
+    }
+}
