@@ -1,0 +1,45 @@
+/* ===== メール認証 =====*/
+.verify {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.verify__message {
+    font-weight: bold;
+    margin-bottom: var(--space-xl);
+    line-height: 1.8;
+}
+
+.verify__action {
+    margin-bottom: var(--space-xl);
+}
+
+.verify__button {
+    padding: var(--space-xs) var(--space-s);
+    color: #000;
+    background-color: #c8c8c8;
+    border: 1px solid #000;
+}
+
+.verify__button:hover {
+    opacity: 0.8;
+}
+
+.verify__resend-link {
+    padding: 0;
+    color: #1990cc;
+    font-weight: bold;
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.verify__resend-message {
+    margin-top: var(--space-m);
+    font-weight: bold;
+}

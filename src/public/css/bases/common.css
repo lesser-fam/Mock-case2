@@ -1,0 +1,122 @@
+/* ===== 共通 =====*/
+:root {
+    --font-xxl: 52px;
+    --font-xl: 32px;
+    --font-l: 24px;
+    --font-m: 18px;
+    --font-s: 14px;
+
+    --space-xxl: 64px;
+    --space-xl: 40px;
+    --space-l: 32px;
+    --space-m: 24px;
+    --space-s: 16px;
+    --space-xs: 8px;
+    --space-xxs: 4px;
+}
+
+@media screen and (max-width:850px) {
+    :root {
+        --font-xxl: 38px;
+        --font-xl: 26px;
+        --font-l: 20px;
+        --font-m: 16px;
+        --font-s: 12px;
+    }
+}
+
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: var(--space-s);
+    padding: var(--space-s);
+    background-color: black;
+}
+
+.header__logo {
+    height: 40px;
+}
+
+.header__nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-s);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.header__nav-item {
+    font-size: var(--font-m);
+    color: #ffffff;
+    background-color: transparent;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    appearance: none;
+}
+
+.header__nav-item--sell {
+    color: black;
+    background-color: #ffffff;
+    padding: var(--space-xs) var(--space-s);
+    border-radius: 5px;
+}
+
+.container {
+    max-width: 1540px;
+    margin: 0 auto;
+    padding-inline: var(--space-l);
+}
+
+.container--narrow {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding-inline: var(--space-l);
+}
+
+.container--form {
+    max-width: 700px;
+    margin: 0 auto var(--space-xxl);
+    padding-inline: var(--space-s);
+}
+
+/*~850px */
+@media screen and (max-width: 850px) {
+    .header {
+        padding: var(--space-xs);
+        gap: var(--space-xs);
+    }
+
+    .header img {
+        height: 25px;
+    }
+
+    .header__search input {
+        width: 200px;
+    }
+
+    .header__nav {
+        gap: var(--space-xs);
+    }
+
+    .header__nav-item {
+        font-size: var(--font-s);
+    }
+}

@@ -1,0 +1,34 @@
+# dependencies
+src/node_modules/
+src/vendor/
+
+# public
+src/public/hot
+src/public/storage
+
+# storage / cache
+src/storage/*.key
+src/.phpunit.result.cache
+
+# env
+src/.env
+src/.env.*
+.env
+.env.*
+
+# homestead / docker
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+
+# logs
+npm-debug.log
+yarn-error.log
+
+# editor / ide
+.idea/
+.vscode/
+
+# Docker DB volumes (do not commit)
+docker/mysql/data/
+docker/mysql/log/
