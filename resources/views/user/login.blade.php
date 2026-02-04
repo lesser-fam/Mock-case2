@@ -27,7 +27,7 @@
                 @enderror
             </p>
         </div>
-        <input class="btn btn--primary" type="submit" value="ログインする">
+        <input class="btn btn--big" type="submit" value="ログインする">
         <a class="form__link" href="{{ route('register') }}">会員登録はこちら</a>
     </form>
 </div>

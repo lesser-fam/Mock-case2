@@ -60,17 +60,17 @@
     text-align: center;
     font-weight: bold;
     border-radius: 5px;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.btn--primary {
+.btn--big {
     width: 100%;
     padding: var(--space-s) 0;
     color: #fff;
     font-size: var(--font-m);
-    background-color: #f05550;
+    background-color: #000;
     border: none;
-    text-decoration: none;
 }
 
 @media screen and (max-width: 850px) {

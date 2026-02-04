@@ -19,14 +19,10 @@
 }
 
 .verify__button {
-    display: inline-block;
     padding: var(--space-xs) var(--space-s);
     color: #000;
-    font-weight: bold;
     background-color: #c8c8c8;
     border: 1px solid #000;
-    border-radius: 5px;
-    text-decoration: none;
 }
 
 .verify__button:hover {

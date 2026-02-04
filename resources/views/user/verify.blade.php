@@ -11,7 +11,7 @@
         メール認証を完了してください。
     </p>
     <div class="verify__action">
-        <a class="verify__button" href="http://localhost:8025" target="_blank">
+        <a class="btn verify__button" href="http://localhost:8025" target="_blank">
             認証はこちらから
         </a>
     </div>
