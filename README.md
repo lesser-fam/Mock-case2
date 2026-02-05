@@ -6,25 +6,32 @@
 
 ## 環境構築
 **初回起動手順**
-1. `git clone git@github.com:lesser-fam/Mock-case2.git`
-2. DockerDesktopを立ち上げる
+1. DockerDesktopを立ち上げる
+2. `git clone git@github.com:lesser-fam/Mock-case2.git`
 3. `cd Mock-case2`
 4. `make bootstrap`
 
+※ 権限エラーが出た場合のみ実行
+```bash
+docker-compose exec php bash
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+```
 
-本アプリでは、動作確認用として、以下の初期データをシーダーで作成しています。
+
+# テストユーザー
+※ 本アプリでは、動作確認用として、以下の初期データをシーダーで作成しています。
 - 管理者ユーザー：2人
 - 一般ユーザー：6人
 - 勤怠記録情報：(件)
 
-**テストユーザー**
-※ 管理者ユーザー
+**管理者ユーザー**
 | id | name  | email             | password |
 |----|-------|-------------------|----------|
 | 1  | 太郎  | test1@example.com | password |
 | 2  | 次郎  | test2@example.com | password |
 
-※ 一般ユーザー
+**一般ユーザー**
 | id | name  | email             | password |
 |----|-------|-------------------|----------|
 | 3  | 三郎  | test3@example.com | password |
@@ -37,14 +44,9 @@
 ※ パスワードは全ユーザー共通で「password」です
 
 
-※ 権限エラーが出た場合のみ実行
-```bash
-docker-compose exec php bash
-chown -R www-data:www-data storage bootstrap/cache
-chmod -R 775 storage bootstrap/cache
-```
 
-9. テスト実行
+
+# テスト実行
 
 ※ テスト実行前に、MySQLのrootユーザーでテスト用データベースを作成してください。
 ```bash
@@ -112,7 +114,7 @@ php artisan test
 
 
 ## 使用技術
-- PHP 8.1.
+- PHP 8.1.34
 - Laravel 8.83.29
 - MySQL 8.0.26
 - Laravel Fortify (認証)

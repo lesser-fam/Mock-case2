@@ -65,6 +65,14 @@ Route::post('/email/resend', function () {
     return back()->with('resent', true);
 })->name('verification.resend');
 
-Route::get('/attendance', [AttendanceController::class, 'index'])
-    ->middleware('auth')
-    ->name('attendance');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
+    Route::post('/attendance/work/start', [AttendanceController::class, 'workStart'])->name('attendance.work.start');
+    Route::post('/attendance/break/start', [AttendanceController::class, 'breakStart'])->name('attendance.break.start');
+    Route::post('/attendance/break/end', [AttendanceController::class, 'breakEnd'])->name('attendance.break.end');
+    Route::post('/attendance/work/end', [AttendanceController::class, 'workEnd'])->name('attendance.work.end');
+
+    //ダミー
+    Route::get('/attendance/list', fn() => 'todo')->name('attendance.list');
+    Route::get('/stamp_correction_request/list', fn() => 'todo')->name('request.list');
+});

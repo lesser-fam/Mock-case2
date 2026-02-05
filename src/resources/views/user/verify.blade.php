@@ -1,6 +1,7 @@
 @extends('layouts.guest')
 
 @section('css')
+<link rel="stylesheet" href="{{ asset('css/forms/form.css') }}">
 <link rel="stylesheet" href="{{ asset('css/forms/verify.css') }}">
 @endsection
 

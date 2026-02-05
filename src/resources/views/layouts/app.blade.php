@@ -18,16 +18,19 @@
 
         @auth
         <ul class="header__nav">
-            @if (Route::has('attendance'))
-            <li><a href="{{ route('attendance') }}">勤怠</a></li>
-            @endif
+            @if ($navRole === 'admin')
+                <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
+                <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
+                <li><a href="{{ route('request.list') }}">申請一覧</a></li>
 
-            @if (Route::has('attendance.list'))
-            <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
-            @endif
+            @elseif ($navRole === 'user' && $navStatus === 'finished')
+                <li><a href="{{ route('attendance.list') }}">今月の出勤一覧</a></li>
+                <li><a href="{{ route('request.list') }}">申請一覧</a></li>
 
-            @if (Route::has('request.list'))
-            <li><a href="{{ route('request.list') }}">申請</a></li>
+            @else
+                <li><a href="{{ route('attendance') }}">勤怠</a></li>
+                <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
+                <li><a href="{{ route('request.list') }}">申請</a></li>
             @endif
 
             <li>
