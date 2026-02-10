@@ -13,8 +13,10 @@ src/.phpunit.result.cache
 # env
 src/.env
 src/.env.*
+!src/.env.example
 .env
 .env.*
+!.env.example
 
 # homestead / docker
 docker-compose.override.yml
