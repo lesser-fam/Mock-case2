@@ -79,7 +79,7 @@ return [
     'redirects' => [
         'login'    => '/attendance',
         'register' => '/email/verify',
-        'logout'   => '/login',
+        // 'logout' => '/login',
     ],
 
     /*

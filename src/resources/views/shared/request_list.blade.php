@@ -1,12 +1,6 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
-@endsection
-
-@extends('layouts.app')
-
-@section('css')
 <link rel="stylesheet" href="{{ asset('css/request_list.css') }}">
 @endsection
 
@@ -50,9 +44,9 @@
             <div>{{ $r->memo ?? '' }}</div>
             <div>{{ $applied }}</div>
             <div>
-                @if ($isAdmin)
+                @if (auth()->user()->role === 'admin')
                 <a class="btn btn--small"
-                    href="{{ route('request.approve', ['attendance_correct_request_id' => $r->id]) }}">
+                    href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">
                     詳細
                 </a>
                 @else

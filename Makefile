@@ -30,6 +30,7 @@ restart:
 	@make up
 
 cache:
+	docker-compose exec php php artisan optimize:clear
 	docker-compose exec php php artisan cache:clear
 	docker-compose exec php php artisan config:cache
 
