@@ -12,7 +12,10 @@
 
 <body>
     <header class="header">
-        <a href="{{ route('register') }}">
+        <a href="{{ request()->is('admin/*')
+            ? route('admin.login')
+            : route('login')
+        }}">
             <img class="header__logo" src="{{ asset('images/logo.png') }}" alt="ロゴ">
         </a>
     </header>

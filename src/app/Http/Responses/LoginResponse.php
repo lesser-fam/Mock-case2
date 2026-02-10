@@ -20,9 +20,9 @@ class LoginResponse implements LoginResponseContract
         }
 
         if ($user && $request->is('admin/login')) {
-            return redirect('/admin/attendance/list');
+            return redirect()->route('admin.attendance.list');
         }
 
-        return redirect('/attendance');
+        return redirect()->route('attendance');
     }
 }
