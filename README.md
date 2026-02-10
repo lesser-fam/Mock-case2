@@ -26,20 +26,23 @@ chmod -R 775 storage bootstrap/cache
 - 勤怠記録情報：(件)
 
 **管理者ユーザー**
-| id | name  | email             | password |
-|----|-------|-------------------|----------|
-| 1  | 太郎  | test1@example.com | password |
-| 2  | 次郎  | test2@example.com | password |
+| id | name    | email             |
+|----|---------|-------------------|
+| 1  | 管理者A  | admin1@example.com |
+| 2  | 管理者B  | admin2@example.com |
+
+※ パスワードは全ユーザー共通で「password」です
+
 
 **一般ユーザー**
-| id | name  | email             | password |
-|----|-------|-------------------|----------|
-| 3  | 三郎  | test3@example.com | password |
-| 4  | 四郎  | test4@example.com | password |
-| 5  | 五郎  | test5@example.com | password |
-| 6  | 六郎  | test6@example.com | password |
-| 7  | 七郎  | test7@example.com | password |
-| 8  | 八郎  | test8@example.com | password |
+| id | name      | email             |
+|----|-----------|-------------------|
+| 3  | 山田 太郎  | user1@example.com |
+| 4  | 佐藤 次郎  | user2@example.com |
+| 5  | 鈴木 三郎  | user3@example.com |
+| 6  | 高橋 四郎  | user4@example.com |
+| 7  | 伊藤 五郎  | user5@example.com |
+| 8  | 渡辺 六郎  | user6@example.com |
 
 ※ パスワードは全ユーザー共通で「password」です
 
