@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendances/attendance.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance">
+<div class="container--clock attendance">
     <div class="attendance__card">
         <div class="attendance__status">
             @switch($status)
@@ -22,32 +22,32 @@
 
         <div class="attendance__actions">
             @if ($status === 'outside')
-                <form method="POST" action="{{ route('attendance.work.start') }}">
-                    @csrf
-                    <button class="btn" type="submit">出勤</button>
-                </form>
+            <form method="POST" action="{{ route('attendance.work.start') }}">
+                @csrf
+                <button class="btn btn--clock btn--black" type="submit">出勤</button>
+            </form>
 
             @elseif ($status === 'working')
-                <div class="actions-row">
-                    <form method="POST" action="{{ route('attendance.work.end') }}">
-                        @csrf
-                        <button class="btn" type="submit">退勤</button>
-                    </form>
-
-                    <form method="POST" action="{{ route('attendance.break.start') }}">
-                        @csrf
-                        <button class="btn" type="submit">休憩入</button>
-                    </form>
-                </div>
-
-            @elseif ($status === 'breaking')
-                <form method="POST" action="{{ route('attendance.break.end') }}">
+            <div class="attendance__actions-row">
+                <form method="POST" action="{{ route('attendance.work.end') }}">
                     @csrf
-                    <button class="btn" type="submit">休憩戻</button>
+                    <button class="btn btn--clock btn--black" type="submit">退勤</button>
                 </form>
 
+                <form method="POST" action="{{ route('attendance.break.start') }}">
+                    @csrf
+                    <button class="btn btn--clock btn--white" type="submit">休憩入</button>
+                </form>
+            </div>
+
+            @elseif ($status === 'breaking')
+            <form method="POST" action="{{ route('attendance.break.end') }}">
+                @csrf
+                <button class="btn btn--clock btn--white" type="submit">休憩戻</button>
+            </form>
+
             @elseif ($status === 'finished')
-                <p class="attendance__message">お疲れ様でした。</p>
+            <p class="attendance__message">お疲れ様でした。</p>
             @endif
         </div>
     </div>

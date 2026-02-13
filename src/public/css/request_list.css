@@ -1,0 +1,119 @@
+.request-list__title {
+    margin: var(--space-l) 0 var(--space-m);
+    padding-left: var(--space-s);
+    font-size: var(--font-xl);
+    border-left: 6px solid #000;
+}
+
+.request-list__tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-xxl);
+    padding: var(--space-s) var(--space-m);
+    margin-bottom: var(--space-s);
+    border-bottom: 2px solid #000;
+}
+
+.request-list__tab {
+    text-decoration: none;
+    color: #777;
+    font-weight: bold;
+    padding: var(--space-xxs) var(--space-xxs);
+}
+
+.request-list__tab.is-active {
+    color: #000;
+}
+
+.request-list__stack {
+    position: relative;
+}
+
+.request-list__stack::before {
+    content: "";
+    position: absolute;
+    height: 5px;
+    left: 0;
+    right: 8px;
+    bottom: -6px;
+    transform: translateX(8px);
+    border-radius: 0 0 10px 10px;
+    background: #fff;
+    z-index: 0;
+}
+
+.request-list__table {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.request-list__table-head {
+    margin-bottom: 1px;
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+}
+
+.request-list__table-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    align-items: center;
+    min-height: var(--space-xl);
+    padding: var(--space-s) var(--space-l);
+    background: #fff;
+}
+
+.request-list__table-row:last-child {
+    margin-bottom: 2px;
+    border-radius: 0 0 3px 10px;
+    overflow: hidden;
+}
+
+.request-list__table-row div {
+    color: #777;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.request-list__table-row>div:nth-child(1) {
+    text-align: center;
+}
+
+.request-list__table-row>div:nth-child(2),
+.request-list__table-row>div:nth-child(3),
+.request-list__table-row>div:nth-child(4),
+.request-list__table-row>div:nth-child(5),
+.request-list__table-row>div:nth-child(6) {
+    text-align: left;
+    padding-left: var(--space-m);
+}
+
+.request-list__table-memo {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn--list-detail {
+    color: #000;
+}
+
+/* ページネーション */
+.request-list__pager {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-l);
+}
+
+
+@media (max-width: 850px) {
+    .request-list__table-row {
+        grid-template-columns: 1fr 1fr 1fr 1.6fr 1fr 0.9fr;
+        padding: var(--space-s) var(--space-xl);
+    }
+
+    .request-list__tabs {
+        padding: var(--space-s) var(--space-l);
+    }
+}

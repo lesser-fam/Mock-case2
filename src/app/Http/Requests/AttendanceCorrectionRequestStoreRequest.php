@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\MessageBag;
+use Carbon\Carbon;
 
 class AttendanceCorrectionRequestStoreRequest extends FormRequest
 {
@@ -24,68 +26,173 @@ class AttendanceCorrectionRequestStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'work_start_at' => ['required', 'date_format:H:i'],
-            'work_end_at'   => ['required', 'date_format:H:i'],
-            'memo'          => ['required', 'string'],
+            'work_start_at' => 'required|date_format:H:i',
+            'work_end_at'   => 'required|date_format:H:i',
+            'memo'          => 'required|max:255',
 
-            'breaks'                => ['array'],
-            'breaks.*.start'        => ['nullable', 'date_format:H:i'],
-            'breaks.*.end'          => ['nullable', 'date_format:H:i'],
+            'breaks'                => 'nullable|array',
+            'breaks.*.start'        => 'nullable|date_format:H:i|required_with:breaks.*.end',
+            'breaks.*.end'          => 'nullable|date_format:H:i|required_with:breaks.*.start',
         ];
     }
 
     public function messages()
     {
         return [
+            'work_start_at.required' => '出勤時間を入力してください',
+            'work_start_at.date_format' => '出勤時間の形式が不正です',
+
+            'work_end_at.required' => '退勤時間を入力してください',
+            'work_end_at.date_format' => '退勤時間の形式が不正です',
+
             'memo.required' => '備考を記入してください',
+            'memo.max' => '備考は255文字以内で入力してください',
+
+            'breaks.*.start.date_format' => '休憩開始の形式が不正です',
+            'breaks.*.end.date_format' => '休憩終了の形式が不正です',
+
+            'breaks.*.start.required_with' => '休憩開始と休憩終了はセットで入力してください',
+            'breaks.*.end.required_with' => '休憩開始と休憩終了はセットで入力してください',
         ];
     }
 
     public function withValidator($validator)
     {
         $validator->after(function ($v) {
-            $start = $this->input('work_start_at');
-            $end   = $this->input('work_end_at');
+            $startStr = $this->input('work_start_at');
+            $endStr   = $this->input('work_end_at');
 
-            // 1) 出勤/退勤の前後関係
-            if ($start && $end && $start >= $end) {
-                $v->errors()->add('work_start_at', '出勤時間もしくは退勤時間が不適切な値です');
-                return;
+            $start = null;
+            $end = null;
+
+            try {
+                if ($startStr) $start = Carbon::createFromFormat('H:i', $startStr);
+                if ($endStr) $end = Carbon::createFromFormat('H:i', $endStr);
+            } catch (\Throwable $e) {
+            }
+
+            // 1) 出勤＜退勤
+            $workOrderOk = false;
+            if ($start && $end) {
+                if ($start->greaterThanOrEqualTo($end)) {
+                    $v->errors()->add('work_start_at', '出勤時間もしくは退勤時間が不適切な値です');
+                } else {
+                    $workOrderOk = true;
+                }
             }
 
             $breaks = $this->input('breaks', []);
+            $validBreaks = [];
+
             foreach ($breaks as $i => $b) {
                 $bs = $b['start'] ?? null;
                 $be = $b['end'] ?? null;
 
-                // 入力が片方だけなら、その行は無効
-                if (($bs && !$be) || (!$bs && $be)) {
+                if (!$bs || !$be) continue;
 
-                    continue;
-                }
-                if (!$bs || !$be) {
-                    continue;
-                }
-
-                // 休憩が出勤より前、退勤より後（開始）
-                if ($start && $bs < $start) {
-                    $v->errors()->add("breaks.$i.start", '休憩時間が不適切な値です');
-                    continue;
-                }
-                if ($end && $bs > $end) {
-                    $v->errors()->add("breaks.$i.start", '休憩時間が不適切な値です');
+                try {
+                    $bsC = Carbon::createFromFormat('H:i', $bs);
+                    $beC = Carbon::createFromFormat('H:i', $be);
+                } catch (\Throwable $e) {
                     continue;
                 }
 
-                // 3) 休憩終了が退勤より後
-                if ($end && $be > $end) {
-                    $v->errors()->add("breaks.$i.end", '休憩時間もしくは退勤時間が不適切な値です');
-                    continue;
-                }
-
-                // 休憩の前後（開始 >= 終了 も不正として扱う）
-                if ($bs >= $be) {
+                // 2) 休憩開始＜休憩終了
+                if ($bsC->greaterThanOrEqualTo($beC)) {
                     $v->errors()->add("breaks.$i.end", '休憩時間が不適切な値です');
+                    continue;
+                }
+
+                // 3) 休憩が勤務時間の外に出ていないか
+                if ($workOrderOk) {
+                    if ($bsC->lessThan($start) || $beC->lessThan($start)) {
+                        $v->errors()->add("breaks.$i.start", '休憩時間が不適切な値です');
+                        $v->errors()->add("breaks.$i.end", '休憩時間が不適切な値です');
+                        continue;
+                    }
+                    if ($bsC->greaterThan($end) || $beC->greaterThan($end)) {
+                        $v->errors()->add("breaks.$i.start", '休憩時間が不適切な値です');
+                        $v->errors()->add("breaks.$i.end", '休憩時間もしくは退勤時間が不適切な値です');
+                        continue;
+                    }
+                }
+
+                $validBreaks[] = [
+                    'i' => $i,
+                    'start' => $bs,
+                    'end' => $be
+                ];
+            }
+
+            // 4) 休憩の重複チェック（開始時刻で並べて前の終了 > 次の開始なら重複）
+            usort($validBreaks, fn($a, $b) => strcmp($a['start'], $b['start']));
+            for ($k = 0; $k < count($validBreaks) - 1; $k++) {
+                $cur  = $validBreaks[$k];
+                $next = $validBreaks[$k + 1];
+
+                if ($cur['end'] > $next['start']) {
+                    $v->errors()->add("breaks.{$next['i']}.start", '休憩時間が重複しています');
+                }
+            }
+
+            // 5) 休憩合計が勤務時間を超えないか
+            if ($workOrderOk) {
+                $workTotal = $start->diffInMinutes($end);
+
+                $breakTotal = 0;
+                foreach ($validBreaks as $b) {
+                    $bsC = Carbon::createFromFormat('H:i', $b['start']);
+                    $beC = Carbon::createFromFormat('H:i', $b['end']);
+                    $breakTotal += $bsC->diffInMinutes($beC);
+                }
+
+                if ($breakTotal >= $workTotal) {
+                    $v->errors()->add('work_end_at', '休憩時間が勤務時間を超えています');
+                }
+            }
+
+            /** @var MessageBag $bag */
+            $bag = $v->errors();
+
+            $breaks = $this->input('breaks', []);
+            if (!is_array($breaks)) {
+                $breaks = [];
+            }
+
+            foreach ($breaks as $i => $_) {
+                $startKey = "breaks.$i.start";
+                $endKey = "breaks.$i.end";
+                $rowKey = "breaks.$i";
+
+                $all = array_merge($bag->get($startKey), $bag->get($endKey));
+                $all = array_values(array_unique($all));
+
+                if (!$all) {
+                    continue;
+                }
+
+                $priority = [
+                    '休憩開始と休憩終了はセットで入力してください',
+                    '休憩開始の形式が不正です',
+                    '休憩終了の形式が不正です',
+                    '休憩時間もしくは退勤時間が不適切な値です',
+                    '休憩時間が不適切な値です',
+                    '休憩時間が重複しています',
+                ];
+
+                $picked = null;
+                foreach ($priority as $p) {
+                    if (in_array($p, $all, true)) {
+                        $picked = $p;
+                        break;
+                    }
+                }
+                if ($picked === null) {
+                    $picked = $all[0];
+                }
+
+                if (!$bag->has($rowKey)) {
+                    $bag->add($rowKey, $picked);
                 }
             }
         });

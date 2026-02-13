@@ -339,9 +339,18 @@ class AttendanceController extends Controller
             return redirect()->route('attendance.detail', ['id' => $attendance->id]);
         }
 
-        $date = $attendance->date; // Carbon(date cast)
+        // if ($attendance->status !== 'finished' || !$attendance->work_start_at || !$attendance->work_end_at) {
+        //     return back()->withErrors(['work_start_at' => '退勤済みの勤怠のみ修正申請できます'])->withInput();
+        // }
 
-        $workStart = $request->input('work_start_at'); // "H:i"
+        //当日修正禁止なら
+        // if ($attendance->date->isSameDay(now())) {
+        //     return back()->withErrors(['work_start_at' => '当日の勤怠は修正申請できません'])->withInput();
+        // }
+
+        $date = $attendance->date;
+
+        $workStart = $request->input('work_start_at');
         $workEnd   = $request->input('work_end_at');
 
         $workStartAt = $date->copy()->setTimeFromTimeString($workStart);

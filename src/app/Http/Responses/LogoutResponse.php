@@ -8,8 +8,7 @@ class LogoutResponse implements LogoutResponseContract
 {
     public function toResponse($request)
     {
-        $fromAdmin = str_starts_with($request->headers->get('referer', ''), url('/admin'));
-
-        return redirect($fromAdmin ? '/admin/login' : '/login');
+        $from = $request->input('from');
+        return redirect($from === 'admin' ? '/admin/login' : '/login');
     }
 }

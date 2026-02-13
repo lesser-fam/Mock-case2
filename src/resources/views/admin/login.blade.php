@@ -27,7 +27,7 @@
                 @enderror
             </p>
         </div>
-        <input class="btn btn--big" type="submit" value="管理者ログインする">
+        <input class="btn btn--form btn--black" type="submit" value="管理者ログインする">
     </form>
 </div>
 @endsection

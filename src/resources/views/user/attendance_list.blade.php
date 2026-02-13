@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendances/attendance_list.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance-list">
+<div class="container--narrow attendance-list">
     <h1>勤怠一覧</h1>
 
-    <div class="pager">
+    <div class="attendance-list__pager">
         <a href="{{ route('attendance.list', ['month' => $prevMonth]) }}">←前月</a>
         <span>{{ $baseMonth->format('Y/m') }}</span>
         <a href="{{ route('attendance.list', ['month' => $nextMonth]) }}">翌月→</a>
     </div>
 
-    <div class="table">
-        <div class="row head">
+    <div class="attendance-list__table">
+        <div class="attendance-list__table-row attendance-list__table-head">
             <div>日付</div>
             <div>出勤</div>
             <div>退勤</div>
@@ -42,14 +42,18 @@
         $workLabel = is_null($workMin) ? '' : sprintf('%d:%02d', intdiv($workMin, 60), $workMin % 60);
         @endphp
 
-        <div class="row">
+        <div class="attendance-list__table-row">
             <div>{{ $dateLabel }}</div>
             <div>{{ $start }}</div>
             <div>{{ $end }}</div>
             <div>{{ $breakLabel }}</div>
             <div>{{ $workLabel }}</div>
-            <div>
-                <a class="btn btn--small" href="{{ route('attendance.detail', ['id' => $a->id]) }}">詳細</a>
+            <div class="attendance-list__detail">
+                @if($a)
+                <a class="btn btn--list-detail" href="{{ route('attendance.detail', ['id' => $a->id]) }}">詳細</a>
+                @else
+                <span class="btn btn--list-detail is-disable">詳細</span>
+                @endif
             </div>
         </div>
         @endforeach

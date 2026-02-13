@@ -1,0 +1,191 @@
+.attendance-detail__title {
+    margin: var(--space-l) 0 var(--space-m);
+    padding-left: var(--space-s);
+    font-size: var(--font-xl);
+    border-left: 6px solid #000;
+}
+
+.attendance-detail__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.attendance-detail__table-row.is-4col {
+    display: grid;
+    grid-template-columns: 350px 200px 80px 200px;
+    align-items: center;
+    padding: var(--space-l) var(--space-xl);
+    margin-bottom: 2px;
+    background: #fff;
+}
+
+.attendance-detail__table-row.is-4col>td[colspan="3"] {
+    grid-column: 2 / -1;
+}
+
+.attendance-detail__table-row:first-child {
+    border-radius: 10px 10px 0 0;
+}
+
+.attendance-detail__table-row:last-child {
+    margin-bottom: 0;
+    border-radius: 0 0 10px 10px;
+}
+
+.attendance-detail__table-key {
+    padding-left: var(--space-xxs);
+    text-align: left;
+    color: #777;
+    font-weight: bold;
+}
+
+.attendance-detail__cell {
+    min-width: 0;
+    text-align: center;
+    color: #111;
+    font-weight: bold;
+}
+
+.attendance-detail__cell.sep {
+    text-align: center;
+    color: #777;
+}
+
+.attendance-detail__cell.is-empty {
+    visibility: hidden;
+}
+
+.name-split {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: var(--space-m);
+}
+
+.name-split__sei,
+.name-split__mei {
+    white-space: nowrap;
+}
+
+.cell-box,
+.time-display {
+    box-sizing: border-box;
+    display: inline-block;
+    align-items: center;
+    width: 100%;
+    max-width: 140px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+}
+
+.name-split.cell-box {
+    justify-content: center;
+    gap: 2ch;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.time-input::-webkit-inner-spin-button,
+.time-input::-webkit-clear-button {
+    display: none;
+}
+
+.time-input:not(:focus):invalid::-webkit-datetime-edit {
+    color: transparent;
+}
+
+.time-input:focus::-webkit-datetime-edit {
+    color: #111;
+}
+
+.time-input {
+    width: 100%;
+    max-width: 140px;
+    text-align: center;
+    padding: var(--space-xs) var(--space-s);
+    font-weight: bold;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.memo-cell {
+    text-align: left;
+}
+
+.memo-cell textarea {
+    box-sizing: border-box;
+    width: 100%;
+    resize: vertical;
+    padding: var(--space-s);
+    font-weight: bold;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.memo-display {
+    display: block;
+    max-width: 500px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-left: var(--space-s);
+}
+
+.detail-actions {
+    margin-top: var(--space-s);
+    display: flex;
+    justify-content: right;
+}
+
+.btn--approve {
+    width: 100px;
+    padding: var(--space-xs) var(--space-s);
+    border-radius: 5px;
+}
+
+.notice {
+    color: #f05550;
+    font-weight: bold;
+}
+
+.attendance-detail__table-row.has-error {
+    margin: 0 auto;
+}
+
+.attendance-detail__table-row.is-error-row {
+    margin-bottom: 2px;
+    padding: 0 var(--space-xl);
+    background: #fff;
+}
+
+.row-error-wide {
+    padding: 0 var(--space-l);
+}
+
+.row-error-wide .form__error:first-child {
+    margin-top: 0;
+}
+
+.form__error {
+    text-align: center;
+}
+
+
+@media (max-width: 850px) {
+    .attendance-detail__table-row.is-4col {
+        grid-template-columns: 200px 1fr 40px 1fr;
+        padding: var(--space-m) var(--space-l);
+    }
+
+    .attendance-detail__table-row.is-error-row {
+        margin-bottom: 2px;
+        padding: 0;
+    }
+
+    .time-input {
+        max-width: none;
+    }
+}

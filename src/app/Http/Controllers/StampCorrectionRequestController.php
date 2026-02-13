@@ -22,8 +22,13 @@ class StampCorrectionRequestController extends Controller
 
         $query = AttendanceCorrectionRequest::query()
             ->with(['applicant'])
-            ->where('status', $status)
-            ->orderByDesc('created_at');
+            ->where('status', $status);
+
+        if ($status === 'pending') {
+            $query->orderBy('date', 'asc')->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('date', 'desc')->orderBy('created_at', 'desc');
+        }
 
         $isAdmin = ($user->role === 'admin');
 
@@ -31,7 +36,7 @@ class StampCorrectionRequestController extends Controller
             $query->where('user_id', $user->id);
         }
 
-        $requests = $query->paginate(10)->withQueryString();
+        $requests = $query->paginate(10)->appends($request->query());
 
         return view('shared.request_list', [
             'requests' => $requests,

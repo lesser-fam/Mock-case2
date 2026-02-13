@@ -1,0 +1,85 @@
+.attendance {
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: var(--space-xxl);
+    padding: var(--space-l) 0 var(--space-xl);
+}
+
+.attendance__card {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--space-xl) var(--space-l);
+}
+
+.attendance__status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-s);
+    padding: var(--space-xxs) var(--space-m);
+    color: #222;
+    font-size: var(--font-m);
+    font-weight: bold;
+    background: #bbb;
+    border-radius: 100px;
+}
+
+.attendance__date {
+    margin-bottom: var(--space-m);
+    font-size: var(--font-l);
+    color: #111;
+}
+
+.attendance__time {
+    font-size: var(--font-xxl);
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    color: #111;
+}
+
+.attendance__actions {
+    margin-top: var(--space-xl);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-s);
+}
+
+.attendance__actions-row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-l);
+}
+
+.attendance__actions-row form {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn--clock {
+    width: min(200px, 100%);
+    padding: var(--space-xs) var(--space-xl);
+    font-size: var(--font-m);
+    border-radius: 15px;
+}
+
+.attendance__message {
+    font-size: var(--font-m);
+    font-weight: bold;
+    color: #111;
+    margin: var(--space-s) 0 0;
+}
+
+@media (max-width: 850px) {
+    .attendance__actions-row {
+        flex-direction: column;
+    }
+}

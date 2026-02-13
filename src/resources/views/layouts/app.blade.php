@@ -39,6 +39,7 @@
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
+                    <input type="hidden" name="from" value="{{ $navRole === 'admin' ? 'admin' : 'user' }}">
                     <button class="header__nav-item" type="submit">ログアウト</button>
                 </form>
             </li>

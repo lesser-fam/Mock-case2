@@ -73,11 +73,14 @@ class FortifyServiceProvider extends ServiceProvider
 
             if ($request->is('admin/login')) {
                 if ($user->role !== 'admin') $failed();
+
+                $request->session()->put('login_context', 'admin');
                 return $user;
             }
 
             if ($user->role !== 'user') $failed();
 
+            $request->session()->put('login_context', 'user');
             return $user;
         });
     }
