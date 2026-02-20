@@ -1,0 +1,45 @@
+.staff-list__title {
+    margin: var(--space-l) 0 var(--space-xxl);
+    padding-left: var(--space-s);
+    font-size: var(--font-xl);
+    border-left: 6px solid #000;
+}
+
+.staff-list__table {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: var(--space-xl);
+}
+
+.staff-list__table-head {
+    text-align: center;
+    margin-bottom: 1px;
+    color: #777;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+}
+
+.staff-list__table-row {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr 0.7fr;
+    align-items: center;
+    min-height: var(--space-xl);
+    padding: var(--space-s) var(--space-l);
+    background: #fff;
+}
+
+.staff-list__table-row:last-child {
+    border-radius: 0 0 10px 10px;
+}
+
+.staff-list__cell {
+    text-align: center;
+    color: #777;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.btn--list-detail {
+    color: #000;
+}

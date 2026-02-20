@@ -57,4 +57,22 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(AttendanceCorrectionRequest::class, 'approved_by');
     }
+
+    public function getSeiAttribute(): string
+    {
+        $name = trim((string)($this->name ?? ''));
+        if ($name === '') return '';
+
+        $parts = preg_split('/\s+/u', $name);
+        return $parts[0] ?? $name;
+    }
+
+    public function getMeiAttribute(): string
+    {
+        $name = trim((string)($this->name ?? ''));
+        if ($name === '') return '';
+
+        $parts = preg_split('/\s+/u', $name);
+        return $parts[1] ?? '';
+    }
 }

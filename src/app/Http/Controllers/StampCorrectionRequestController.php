@@ -101,8 +101,9 @@ class StampCorrectionRequestController extends Controller
 
             $attendance->update([
                 'work_start_at' => $req->work_start_at,
-                'work_end_at'   => $req->work_end_at,
-                'status'        => 'finished',
+                'work_end_at' => $req->work_end_at,
+                'memo' => $req->memo,
+                'status' => 'finished',
             ]);
 
             BreakTime::query()

@@ -1,65 +1,65 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}">
+<link rel="stylesheet" href="{{ asset('css/attendances/attendance_detail.css') }}">
 @endsection
 
 @section('content')
-<div class="attendance-detail">
+<div class="container--narrow attendance-detail">
     <h1 class="attendance-detail__title">勤怠詳細</h1>
 
-    <form method="POST" action="{{ route('request.approve', ['attendance_correction_request_id' => $request->id]) }}">
-        @csrf
+    @include('shared.attendance_detail_table', [
+    'person' => $request->applicant,
+    'yearLabel' => $yearLabel,
+    'mdLabel' => $mdLabel,
+    'displayWorkStart' => $displayWorkStart,
+    'displayWorkEnd' => $displayWorkEnd,
+    'breakRows' => $breakRows,
+    'displayMemo' => $displayMemo,
+    ])
 
-        <table class="detail-table">
-            <tr>
-                <th>名前</th>
-                <td>{{ $request->applicant?->name ?? '' }}</td>
-            </tr>
-
-            <tr>
-                <th>日付</th>
-                <td class="date-split">
-                    <span class="date-split__year">{{ \Carbon\Carbon::parse($request->date)->format('Y年') }}</span>
-                    <span class="date-split__md">{{ \Carbon\Carbon::parse($request->date)->format('n月j日') }}</span>
-                </td>
-            </tr>
-
-            <tr>
-                <th>出勤・退勤</th>
-                <td class="time-range">
-                    <span>{{ $displayWorkStart ?? '' }}</span>
-                    <span>～</span>
-                    <span>{{ $displayWorkEnd ?? '' }}</span>
-                </td>
-            </tr>
-
-            @foreach ($breakRows as $i => $row)
-            <tr>
-                <th>休憩{{ $i === 0 ? '' : $i + 1 }}</th>
-                <td class="time-range">
-                    <span>{{ $row['start'] ?? '' }}</span>
-                    <span>～</span>
-                    <span>{{ $row['end'] ?? '' }}</span>
-                </td>
-            </tr>
-            @endforeach
-
-            <tr>
-                <th>備考</th>
-                <td>
-                    <span>{{ $displayMemo ?? '' }}</span>
-                </td>
-            </tr>
-        </table>
-
-        <div class="detail-actions">
-            @if($isPending)
-            <button type="submit" class="btn btn--small">承認</button>
-            @else
-            <p class="notice">承認済み</p>
-            @endif
-        </div>
-    </form>
+    <div class="detail-actions">
+        @if($isPending)
+        <form id="approveForm" method="POST" action="{{ route('request.approve', ['attendance_correction_request_id' => $request->id]) }}">
+            @csrf
+            <button type="submit" class="btn btn--approve btn--black" id="approveBtn">承認</button>
+        </form>
+        @else
+        <p class="btn btn--approve btn--gray">承認済み</p>
+        @endif
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('approveForm');
+        if (!form) return;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('approveBtn');
+            btn.disabled = true;
+
+            const token = form.querySelector('input[name="_token"]').value;
+
+            const res = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token,
+                    'Accept': 'application/json'
+                },
+            });
+
+            if (res.ok) {
+                btn.textContent = '承認済み';
+                btn.classList.add('is-disable');
+                return;
+            }
+
+            btn.disabled = false;
+            form.submit();
+        });
+    });
+</script>
 @endsection

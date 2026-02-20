@@ -78,10 +78,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 // ===== 管理者 =====
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/attendance/list', [AdminAttendanceController::class, 'list'])->name('attendance.list');
-
     Route::get('/attendance/{id}', [AdminAttendanceController::class, 'detail'])->name('attendance.detail');
+    Route::post('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
 
     Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.list');
-
-    Route::get('/attendance/staff/{id}', [AdminAttendanceController::class, 'staffMonth'])->name('attendance.staff');
+    Route::get('/attendance/staff/{id}', [AdminStaffController::class, 'staffMonth'])->name('staff.attendances');
 });

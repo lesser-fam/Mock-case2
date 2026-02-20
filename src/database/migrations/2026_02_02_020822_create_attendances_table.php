@@ -21,6 +21,7 @@ class CreateAttendancesTable extends Migration
             $table->dateTime('work_start_at')->nullable();
             $table->dateTime('work_end_at')->nullable();
             $table->string('status'); //outside / working / breaking / finished
+            $table->string('memo')->nullable();
             $table->timestamps();
         });
     }

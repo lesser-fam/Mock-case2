@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\AttendanceCorrectionRequest;
 use App\Models\AttendanceCorrectionRequestBreak;
 use App\Models\BreakTime;
+use App\Services\AttendanceMonthTable;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -165,99 +166,24 @@ class AttendanceController extends Controller
         return redirect()->route('attendance');
     }
 
-    public function list(Request $request)
+    public function list(Request $request, AttendanceMonthTable $table)
     {
         $user = Auth::user();
 
-        $month = $request->query('month');
+        $monthStr = $request->query('month');
         $base = null;
-        if (is_string($month) && preg_match('/^\d{4}-\d{2}$/', $month)) {
+
+        if (is_string($monthStr) && preg_match('/^\d{4}-\d{2}$/', $monthStr)) {
             try {
-                $base = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
+                $base = Carbon::createFromFormat('Y-m', $monthStr)->startOfMonth();
             } catch (\Throwable $e) {
                 $base = null;
             }
         }
-        $base = $base ?: Carbon::now()->startOfMonth();
 
-        $start = $base->copy()->startOfMonth();
-        $end   = $base->copy()->endOfMonth();
+        $base = $base ?: now()->startOfMonth();
 
-        DB::transaction(function () use ($user, $start, $end) {
-            $existingDates = Attendance::query()
-                ->where('user_id', $user->id)
-                ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
-                ->pluck('date')
-                ->map(fn($d) => Carbon::parse($d)->toDateString())
-                ->all();
-
-            $existingSet = array_flip($existingDates);
-
-            $rows = [];
-            $cursor = $start->copy();
-            while ($cursor->lte($end)) {
-                $dateStr = $cursor->toDateString();
-                if (!isset($existingSet[$dateStr])) {
-                    $rows[] = [
-                        'user_id' => $user->id,
-                        'date' => $dateStr,
-                        'status' => 'outside',
-                        'work_start_at' => null,
-                        'work_end_at' => null,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
-                }
-                $cursor->addDay();
-            }
-
-            if (!empty($rows)) {
-                Attendance::query()->insert($rows);
-            }
-        });
-
-        $attendances = Attendance::query()
-            ->where('user_id', $user->id)
-            ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
-            ->with('breaks')
-            ->get()
-            ->keyBy(fn($a) => $a->date->toDateString());
-
-        $days = [];
-        $cursor = $start->copy();
-        while ($cursor->lte($end)) {
-            $dateStr = $cursor->toDateString();
-            $attendance = $attendances->get($dateStr);
-
-            $breakMinutes = 0;
-            foreach ($attendance->breaks as $b) {
-                if ($b->break_start_at && $b->break_end_at) {
-                    $breakMinutes += $b->break_start_at->diffInMinutes($b->break_end_at);
-                }
-            }
-
-            $workMinutes = null;
-            if ($attendance->work_start_at && $attendance->work_end_at) {
-                $total = $attendance->work_start_at->diffInMinutes($attendance->work_end_at);
-                $workMinutes = max(0, $total - $breakMinutes);
-            }
-
-            $days[] = [
-                'date' => $cursor->copy(),
-                'attendance' => $attendance,
-                'breakMinutes' => $breakMinutes,
-                'workMinutes' => $workMinutes,
-            ];
-
-            $cursor->addDay();
-        }
-
-        return view('user.attendance_list', [
-            'baseMonth' => $base,
-            'prevMonth' => $base->copy()->subMonth()->format('Y-m'),
-            'nextMonth' => $base->copy()->addMonth()->format('Y-m'),
-            'days' => $days,
-        ]);
+        return view('user.attendance_list', $table->build($user->id, $base));
     }
 
     public function detail($id)
@@ -267,7 +193,7 @@ class AttendanceController extends Controller
         $attendance = Attendance::query()
             ->where('id', $id)
             ->where('user_id', $user->id)
-            ->with('breaks')
+            ->with(['breaks', 'user'])
             ->firstOrFail();
 
         $latestRequest = AttendanceCorrectionRequest::query()
@@ -300,8 +226,10 @@ class AttendanceController extends Controller
             $breakRows[] = ['start' => null, 'end' => null];
         }
 
-        $displayMemo = $latestRequest?->memo ?? '';
-        
+        $displayMemo = $isPending
+            ? ($latestRequest?->memo ?? '')
+            : ($attendance->memo ?? '');
+
         $date = $attendance->date;
         $yearLabel = $date->format('Y年');
         $mdLabel = $date->format('n月j日');
@@ -339,15 +267,6 @@ class AttendanceController extends Controller
             return redirect()->route('attendance.detail', ['id' => $attendance->id]);
         }
 
-        // if ($attendance->status !== 'finished' || !$attendance->work_start_at || !$attendance->work_end_at) {
-        //     return back()->withErrors(['work_start_at' => '退勤済みの勤怠のみ修正申請できます'])->withInput();
-        // }
-
-        //当日修正禁止なら
-        // if ($attendance->date->isSameDay(now())) {
-        //     return back()->withErrors(['work_start_at' => '当日の勤怠は修正申請できません'])->withInput();
-        // }
-
         $date = $attendance->date;
 
         $workStart = $request->input('work_start_at');
@@ -373,7 +292,6 @@ class AttendanceController extends Controller
                 $bs = $b['start'] ?? null;
                 $be = $b['end'] ?? null;
 
-                // 「両方ある行だけ保存」
                 if (!$bs || !$be) {
                     continue;
                 }
