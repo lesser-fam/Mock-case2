@@ -13,8 +13,8 @@
 <body>
     <header class="header">
         <a href="{{ auth()->user()->role === 'admin'
-            ? route('admin.attendance.list')
-            : route('attendance')
+            ? route('admin.attendance.daily.index')
+            : route('attendance.stamp.show')
         }}">
             <img class="header__logo" src="{{ asset('images/logo.png') }}" alt="ロゴ">
         </a>
@@ -22,18 +22,18 @@
         @auth
         <ul class="header__nav">
             @if ($navRole === 'admin')
-            <li><a href="{{ route('admin.attendance.list') }}">勤怠一覧</a></li>
-            <li><a href="{{ route('admin.staff.list') }}">スタッフ一覧</a></li>
-            <li><a href="{{ route('request.list') }}">申請一覧</a></li>
+            <li><a href="{{ route('admin.attendance.daily.index') }}">勤怠一覧</a></li>
+            <li><a href="{{ route('admin.staff.index') }}">スタッフ一覧</a></li>
+            <li><a href="{{ route('request.index') }}">申請一覧</a></li>
 
             @elseif ($navRole === 'user' && $navStatus === 'finished')
-            <li><a href="{{ route('attendance.list') }}">今月の出勤一覧</a></li>
-            <li><a href="{{ route('request.list') }}">申請一覧</a></li>
+            <li><a href="{{ route('attendance.month.index') }}">今月の出勤一覧</a></li>
+            <li><a href="{{ route('request.index') }}">申請一覧</a></li>
 
             @else
-            <li><a href="{{ route('attendance') }}">勤怠</a></li>
-            <li><a href="{{ route('attendance.list') }}">勤怠一覧</a></li>
-            <li><a href="{{ route('request.list') }}">申請</a></li>
+            <li><a href="{{ route('attendance.stamp.show') }}">勤怠</a></li>
+            <li><a href="{{ route('attendance.month.index') }}">勤怠一覧</a></li>
+            <li><a href="{{ route('request.index') }}">申請</a></li>
             @endif
 
             <li>

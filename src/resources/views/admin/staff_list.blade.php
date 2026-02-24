@@ -21,7 +21,7 @@
             <div class="staff-list__cell">{{ $staff->email }}</div>
             <div class="staff-list__cell">
                 <a class="btn btn--list-detail"
-                    href="{{ route('admin.staff.attendances', ['id' => $staff->id]) }}">
+                    href="{{ route('admin.staff.month.index', ['id' => $staff->id]) }}">
                     詳細
                 </a>
             </div>

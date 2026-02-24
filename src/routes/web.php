@@ -4,8 +4,11 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
-use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\UserAttendanceDetailController;
+use App\Http\Controllers\UserAttendanceMonthController;
+use App\Http\Controllers\UserAttendanceStampController;
 use App\Http\Controllers\AdminAttendanceController;
+use App\Http\Controllers\AdminDailyAttendanceController;
 use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\StampCorrectionRequestController;
 
@@ -15,6 +18,8 @@ Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
 });
+
+
 
 // ===== メール認証（一般ユーザー登録用） =====
 Route::get('/email/verify', function () {
@@ -47,40 +52,44 @@ Route::post('/email/resend', function () {
 })->name('verification.resend');
 
 
+
 // ===== 一般ユーザー =====
 Route::middleware(['auth', 'verified', 'user'])->group(function () {
-    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance');
+    Route::get('/attendance', [UserAttendanceStampController::class, 'show'])->name('attendance.stamp.show');
 
-    Route::post('/attendance/work/start', [AttendanceController::class, 'workStart'])->name('attendance.work.start');
-    Route::post('/attendance/break/start', [AttendanceController::class, 'breakStart'])->name('attendance.break.start');
-    Route::post('/attendance/break/end', [AttendanceController::class, 'breakEnd'])->name('attendance.break.end');
-    Route::post('/attendance/work/end', [AttendanceController::class, 'workEnd'])->name('attendance.work.end');
+    Route::post('/attendance/work/start', [UserAttendanceStampController::class, 'workStart'])->name('attendance.stamp.work_start');
+    Route::post('/attendance/break/start', [UserAttendanceStampController::class, 'breakStart'])->name('attendance.stamp.break_start');
+    Route::post('/attendance/break/end', [UserAttendanceStampController::class, 'breakEnd'])->name('attendance.stamp.break_end');
+    Route::post('/attendance/work/end', [UserAttendanceStampController::class, 'workEnd'])->name('attendance.stamp.work_end');
 
-    Route::get('/attendance/list', [AttendanceController::class, 'list'])->name('attendance.list');
-    Route::get('/attendance/detail/{id}', [AttendanceController::class, 'detail'])->name('attendance.detail');
-    Route::post('/attendance/detail/{id}', [AttendanceController::class, 'request'])->name('attendance.detail.request');
+    Route::get('/attendance/list', [UserAttendanceMonthController::class, 'index'])->name('attendance.month.index');
+    Route::get('/attendance/detail/{id}', [UserAttendanceDetailController::class, 'show'])->name('attendance.detail.show');
+    Route::post('/attendance/detail/{id}', [UserAttendanceDetailController::class, 'request'])->name('attendance.detail.request');
 });
+
 
 
 // ===== 申請一覧 =====
 Route::middleware(['auth'])->group(function () {
-    Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('request.list');
+    Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('request.index');
 });
+
 
 
 // ===== 申請　承認 =====
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'show'])->name('request.approve.show');
-    Route::post('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'approve'])->name('request.approve');
+    Route::post('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'approve'])->name('request.approve.store');
 });
+
 
 
 // ===== 管理者 =====
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/attendance/list', [AdminAttendanceController::class, 'list'])->name('attendance.list');
-    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'detail'])->name('attendance.detail');
+    Route::get('/attendance/list', [AdminDailyAttendanceController::class, 'index'])->name('attendance.daily.index');
+    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.show');
     Route::post('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
 
-    Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.list');
-    Route::get('/attendance/staff/{id}', [AdminStaffController::class, 'staffMonth'])->name('staff.attendances');
+    Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.index');
+    Route::get('/attendance/staff/{id}', [AdminStaffController::class, 'staffMonth'])->name('staff.month.index');
 });

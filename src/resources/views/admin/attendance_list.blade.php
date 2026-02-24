@@ -11,10 +11,10 @@
     </h1>
 
     <div class="admin-attendance-list__pager">
-        <a href="{{ route('admin.attendance.list', ['date' => $prevDate]) }}">←前日</a>
+        <a href="{{ route('admin.attendance.daily.index', ['date' => $prevDate]) }}">←前日</a>
 
         <span class="admin-attendance-list__pager-center">
-            <form class="pager-picker" action="{{ route('admin.attendance.list') }}" method="GET">
+            <form class="pager-picker" action="{{ route('admin.attendance.daily.index') }}" method="GET">
                 <input
                     id="admin-date-picker"
                     class="pager-picker__input"
@@ -36,7 +36,7 @@
             <span class="admin-attendance-list__pager-label">{{ $baseDate->format('Y/m/d') }}</span>
         </span>
 
-        <a href="{{ route('admin.attendance.list', ['date' => $nextDate]) }}">翌日→</a>
+        <a href="{{ route('admin.attendance.daily.index', ['date' => $nextDate]) }}">翌日→</a>
     </div>
 
     <div class="admin-attendance-list__table">
@@ -61,7 +61,7 @@
             <div>{{ $r['breakLabel'] }}</div>
             <div>{{ $r['workLabel'] }}</div>
             <div class="admin-attendance-list__detail">
-                <a class="btn btn--list-detail" href="{{ route('admin.attendance.detail', ['id' => $a->id]) }}">詳細</a>
+                <a class="btn btn--list-detail" href="{{ route('admin.attendance.show', ['id' => $a->id]) }}">詳細</a>
             </div>
         </div>
         @endforeach

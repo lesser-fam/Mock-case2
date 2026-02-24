@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
 use App\Models\User;
-use App\Services\AttendanceMonthTable;
-use Carbon\Carbon;
+use App\Services\Attendance\AttendanceMonthTable;
+use App\Services\DateQueryParser;
 use Illuminate\Http\Request;
 
 class AdminStaffController extends Controller
 {
+    public function __construct(private DateQueryParser $parser) {}
+
     public function index()
     {
         $staffs = User::query()
@@ -26,26 +27,14 @@ class AdminStaffController extends Controller
             ->where('role', 'user')
             ->findOrFail($id);
 
-        $monthStr = $request->query('month');
-        $base = null;
-
-
-        if (is_string($monthStr) && preg_match('/^\d{4}-\d{2}$/', $monthStr)) {
-            try {
-                $base = Carbon::createFromFormat('Y-m', $monthStr)->startOfMonth();
-            } catch (\Throwable $e) {
-                $base = null;
-            }
-        }
-
-        $base = $base ?: now()->startOfMonth();
+        $base = $this->parser->parseMonth($request->query('month'));
 
         $data = $table->build($staff->id, $base);
 
         return view('admin.staff_attendance_list', array_merge($data, [
             'staff' => $staff,
-            'listRouteName' => 'admin.staff.attendances',
-            'detailRouteName' => 'admin.attendance.detail',
+            'listRouteName' => 'admin.staff.month.index',
+            'detailRouteName' => 'admin.attendance.show',
             'listRouteParams' => ['id' => $staff->id],
             'detailRouteParams' => [],
         ]));

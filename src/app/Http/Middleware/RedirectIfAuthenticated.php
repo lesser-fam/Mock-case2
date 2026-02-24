@@ -26,10 +26,10 @@ class RedirectIfAuthenticated
                 $user = Auth::guard($guard)->user();
 
                 if ($user && $user->role === 'admin') {
-                    return redirect()->route('admin.attendance.list');
+                    return redirect()->route('admin.attendance.daily.index');
                 }
 
-                return redirect()->route('attendance');
+                return redirect()->route('attendance.stamp.show');
             }
         }
 

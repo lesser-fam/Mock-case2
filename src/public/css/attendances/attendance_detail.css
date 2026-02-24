@@ -153,6 +153,12 @@
     gap: var(--space-xxl);
 }
 
+.btn.is-disable {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: .6;
+}
+
 .notice {
     margin: 0;
     color: #f05550;

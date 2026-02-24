@@ -1,33 +1,22 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Attendance;
 
 use App\Models\Attendance;
+use App\Services\WorkTimeCalculator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AttendanceMonthTable
 {
-    /**
-     * @return array{
-     *   baseMonth: Carbon,
-     *   prevMonth: string,
-     *   nextMonth: string,
-     *   days: array<int, array{
-     *     date: Carbon,
-     *     attendance: ?Attendance,
-     *     breakMinutes: int,
-     *     workMinutes: ?int
-     *   }>
-     * }
-     */
+    public function __construct(private WorkTimeCalculator $calc) {}
+
     public function build(int $userId, Carbon $month): array
     {
         $baseMonth = $month->copy()->startOfMonth();
         $from = $baseMonth->copy()->startOfMonth();
         $to   = $baseMonth->copy()->endOfMonth();
 
-        // ここが重要：存在しない日付の Attendance を outside で作る
         $this->ensureMonthlyAttendancesExist($userId, $from, $to);
 
         $attendances = Attendance::query()
@@ -43,25 +32,27 @@ class AttendanceMonthTable
             /** @var ?Attendance $a */
             $a = $attendances->get($key);
 
-            $breakMinutes = 0;
-            if ($a) {
-                $breakMinutes = $a->breaks->sum(function ($b) {
-                    if (!$b->break_start_at || !$b->break_end_at) return 0;
-                    return $b->break_start_at->diffInMinutes($b->break_end_at);
-                });
-            }
+            $hasWork = $a && $a->work_start_at && $a->work_end_at;
 
-            $workMinutes = null;
-            if ($a && $a->work_start_at && $a->work_end_at) {
-                $workMinutes = $a->work_start_at->diffInMinutes($a->work_end_at) - $breakMinutes;
-                if ($workMinutes < 0) $workMinutes = 0;
-            }
+            $breakMin = $a ? $this->calc->breakMinutes($a->breaks) : 0;
+            $workMin  = $a ? $this->calc->workMinutes($a->work_start_at, $a->work_end_at, $breakMin) : null;
+
+            $weekday = ['日', '月', '火', '水', '木', '金', '土'][$d->dayOfWeek];
+            $dateLabel = $d->format('m/d') . "($weekday)";
+
+            $start = $a?->work_start_at ? $a->work_start_at->format('H:i') : '';
+            $end   = $a?->work_end_at   ? $a->work_end_at->format('H:i')   : '';
 
             $days[] = [
                 'date' => $d->copy(),
                 'attendance' => $a,
-                'breakMinutes' => (int) $breakMinutes,
-                'workMinutes' => $workMinutes,
+                'breakMinutes' => $breakMin,
+                'workMinutes' => $workMin,
+                'dateLabel' => $dateLabel,
+                'start' => $start,
+                'end' => $end,
+                'breakLabel' => $hasWork ? $this->calc->hmLabel($breakMin) : '',
+                'workLabel'  => $this->calc->hmLabel($workMin),
             ];
         }
 
@@ -88,6 +79,7 @@ class AttendanceMonthTable
             $rows = [];
             for ($d = $from->copy(); $d->lte($to); $d->addDay()) {
                 $dateStr = $d->toDateString();
+
                 if (!isset($existingSet[$dateStr])) {
                     $rows[] = [
                         'user_id' => $userId,

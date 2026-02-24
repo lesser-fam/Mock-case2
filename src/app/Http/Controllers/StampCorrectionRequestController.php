@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceCorrectionRequest;
-use App\Models\BreakTime;
+use App\Services\Attendance\CorrectionApprovalService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-
 
 class StampCorrectionRequestController extends Controller
 {
+    public function __construct(private CorrectionApprovalService $approval) {}
+
     public function index(Request $request)
     {
         $user = Auth::user();
@@ -86,45 +86,8 @@ class StampCorrectionRequestController extends Controller
             abort(403);
         }
 
-        DB::transaction(function () use ($attendance_correction_request_id, $admin) {
+        $this->approval->approve((int) $attendance_correction_request_id, (int) $admin->id);
 
-            $req = AttendanceCorrectionRequest::query()
-                ->with(['attendance', 'breaks'])
-                ->lockForUpdate()
-                ->findOrFail($attendance_correction_request_id);
-
-            if ($req->status !== 'pending') {
-                abort(409);
-            }
-
-            $attendance = $req->attendance;
-
-            $attendance->update([
-                'work_start_at' => $req->work_start_at,
-                'work_end_at' => $req->work_end_at,
-                'memo' => $req->memo,
-                'status' => 'finished',
-            ]);
-
-            BreakTime::query()
-                ->where('attendance_id', $attendance->id)
-                ->delete();
-
-            foreach ($req->breaks as $b) {
-                BreakTime::create([
-                    'attendance_id' => $attendance->id,
-                    'break_start_at' => $b->break_start_at,
-                    'break_end_at'   => $b->break_end_at,
-                ]);
-            }
-
-            $req->update([
-                'status' => 'approved',
-                'approved_by' => $admin->id,
-                // 'approved_at' => now(),
-            ]);
-        });
-
-        return redirect()->route('request.list', ['status' => 'pending']);
+        return redirect()->route('request.approve.show', compact('attendance_correction_request_id'));
     }
 }

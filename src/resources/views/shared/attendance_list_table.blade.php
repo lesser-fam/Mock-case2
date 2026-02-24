@@ -1,6 +1,6 @@
 @php
-$listRouteName = $listRouteName ?? 'attendance.list';
-$detailRouteName = $detailRouteName ?? 'attendance.detail';
+$listRouteName = $listRouteName ?? 'attendance.month.index';
+$detailRouteName = $detailRouteName ?? 'attendance.detail.show';
 $listRouteParams = $listRouteParams ?? [];
 $detailRouteParams = $detailRouteParams ?? [];
 @endphp
@@ -46,28 +46,15 @@ $detailRouteParams = $detailRouteParams ?? [];
 
     @foreach ($days as $row)
     @php
-    $d = $row['date'];
     $a = $row['attendance'];
-
-    $weekday = ['日','月','火','水','木','金','土'][$d->dayOfWeek];
-    $dateLabel = $d->format('m/d') . "($weekday)";
-
-    $start = $a?->work_start_at ? $a->work_start_at->format('H:i') : '';
-    $end = $a?->work_end_at ? $a->work_end_at->format('H:i') : '';
-
-    $breakMin = $row['breakMinutes'] ?? 0;
-    $workMin = $row['workMinutes'];
-
-    $breakLabel = $breakMin ? sprintf('%d:%02d', intdiv($breakMin, 60), $breakMin % 60) : '';
-    $workLabel = is_null($workMin) ? '' : sprintf('%d:%02d', intdiv($workMin, 60), $workMin % 60);
     @endphp
 
     <div class="attendance-list__table-row">
-        <div>{{ $dateLabel }}</div>
-        <div>{{ $start }}</div>
-        <div>{{ $end }}</div>
-        <div>{{ $breakLabel }}</div>
-        <div>{{ $workLabel }}</div>
+        <div>{{ $row['dateLabel'] }}</div>
+        <div>{{ $row['start'] }}</div>
+        <div>{{ $row['end'] }}</div>
+        <div>{{ $row['breakLabel'] }}</div>
+        <div>{{ $row['workLabel'] }}</div>
         <div class="attendance-list__detail">
             @if($a)
             <a class="btn btn--list-detail" href="{{ route($detailRouteName, array_merge($detailRouteParams, ['id' => $a->id])) }}">詳細</a>

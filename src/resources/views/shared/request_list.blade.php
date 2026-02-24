@@ -10,11 +10,11 @@
 
     <div class="request-list__tabs">
         <a class="request-list__tab {{ $status === 'pending' ? 'is-active' : '' }}"
-            href="{{ route('request.list', ['status' => 'pending']) }}">
+            href="{{ route('request.index', ['status' => 'pending']) }}">
             承認待ち
         </a>
         <a class="request-list__tab {{ $status === 'approved' ? 'is-active' : '' }}"
-            href="{{ route('request.list', ['status' => 'approved']) }}">
+            href="{{ route('request.index', ['status' => 'approved']) }}">
             承認済み
         </a>
     </div>
@@ -45,14 +45,14 @@
                 <div class="request-list__table-memo">{{ $r->memo ?? '' }}</div>
                 <div>{{ $applied }}</div>
                 <div>
-                    @if (auth()->user()->role === 'admin')
+                    @if ($isAdmin)
                     <a class="btn btn--list-detail"
                         href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">
                         詳細
                     </a>
                     @else
                     <a class="btn btn--list-detail"
-                        href="{{ route('attendance.detail', ['id' => $r->attendance_id]) }}">
+                        href="{{ route('attendance.detail.show', ['id' => $r->attendance_id]) }}">
                         詳細
                     </a>
                     @endif
