@@ -29,6 +29,10 @@
     background: #fff;
 }
 
+.staff-list__table-row>div {
+    min-width: 0;
+}
+
 .staff-list__table-row:last-child {
     border-radius: 0 0 10px 10px;
 }
@@ -37,6 +41,12 @@
     text-align: center;
     color: #777;
     font-weight: bold;
+    white-space: nowrap;
+}
+
+.staff-list__email {
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 

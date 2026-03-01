@@ -74,6 +74,7 @@
 }
 
 .admin-attendance-list__row>div {
+    min-width: 0;
     text-align: center;
     color: #777;
     font-weight: bold;

@@ -115,7 +115,17 @@
 
 @media (max-width: 850px) {
     .attendance-list__table-row {
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 0.9fr;
+        grid-template-columns: 1.1fr 0.9fr 0.9fr 0.9fr 0.9fr 0.8fr;
         padding: var(--space-xs) var(--space-l);
+    }
+
+    .attendance-list__table-row>div {
+        min-width: 0;
+    }
+
+    .attendance-list__table-row>div:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }

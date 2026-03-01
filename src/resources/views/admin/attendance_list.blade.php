@@ -61,7 +61,11 @@
             <div>{{ $r['breakLabel'] }}</div>
             <div>{{ $r['workLabel'] }}</div>
             <div class="admin-attendance-list__detail">
+                @if ($a)
                 <a class="btn btn--list-detail" href="{{ route('admin.attendance.show', ['id' => $a->id]) }}">詳細</a>
+                @else
+                <span class="btn btn--list-detail is-disable">詳細</span>
+                @endif
             </div>
         </div>
         @endforeach

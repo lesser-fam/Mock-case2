@@ -3,6 +3,9 @@
 
     <form method="POST" action="{{ $formAction }}">
         @csrf
+        @if (!empty($formMethod) && strtoupper($formMethod) !== 'POST')
+        @method($formMethod)
+        @endif
 
         <table class="attendance-detail__table">
             <tr class="attendance-detail__table-row is-4col">

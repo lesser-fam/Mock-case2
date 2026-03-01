@@ -37,7 +37,7 @@ Route::get('/email/verify/{id}/{hash}', function ($id,  $hash) {
     Auth::login($user);
     session()->forget('verify_user_id');
 
-    return redirect()->route('attendance');
+    return redirect()->route('attendance.stamp.show');
 })->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 
 Route::post('/email/resend', function () {
@@ -69,17 +69,19 @@ Route::middleware(['auth', 'verified', 'user'])->group(function () {
 
 
 
-// ===== 申請一覧 =====
+// ===== 申請 =====
 Route::middleware(['auth'])->group(function () {
     Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('request.index');
+
+    Route::get('/stamp_correction_request/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'showForUser'])->name('request.user.show');
 });
 
 
 
-// ===== 申請　承認 =====
+// ===== 承認 =====
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'show'])->name('request.approve.show');
-    Route::post('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'approve'])->name('request.approve.store');
+    Route::post('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'store'])->name('request.approve.store');
 });
 
 
@@ -88,7 +90,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/attendance/list', [AdminDailyAttendanceController::class, 'index'])->name('attendance.daily.index');
     Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.show');
-    Route::post('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
+    Route::patch('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
 
     Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.index');
     Route::get('/attendance/staff/{id}', [AdminStaffController::class, 'staffMonth'])->name('staff.month.index');

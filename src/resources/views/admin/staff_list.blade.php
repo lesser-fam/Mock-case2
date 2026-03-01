@@ -18,7 +18,7 @@
         @foreach ($staffs as $staff)
         <div class="staff-list__table-row">
             <div class="staff-list__cell">{{ $staff->name }}</div>
-            <div class="staff-list__cell">{{ $staff->email }}</div>
+            <div class="staff-list__cell staff-list__email" title="{{ $staff->email }}">{{ $staff->email }}</div>
             <div class="staff-list__cell">
                 <a class="btn btn--list-detail"
                     href="{{ route('admin.staff.month.index', ['id' => $staff->id]) }}">

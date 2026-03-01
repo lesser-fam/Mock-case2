@@ -72,6 +72,7 @@ class UserAttendanceDetailController extends Controller
         ]);
     }
 
+
     public function request(AttendanceCorrectionRequestStoreRequest $request, $id)
     {
         $user = Auth::user();

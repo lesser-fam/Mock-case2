@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="bg-app">
 
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     @yield('css')
 </head>
 
-<body>
+<body class="bg-app">
     <header class="header">
         <a href="{{ auth()->user()->role === 'admin'
             ? route('admin.attendance.daily.index')
@@ -22,18 +22,18 @@
         @auth
         <ul class="header__nav">
             @if ($navRole === 'admin')
-            <li><a href="{{ route('admin.attendance.daily.index') }}">勤怠一覧</a></li>
-            <li><a href="{{ route('admin.staff.index') }}">スタッフ一覧</a></li>
-            <li><a href="{{ route('request.index') }}">申請一覧</a></li>
+            <li><a class="header__nav-item" href="{{ route('admin.attendance.daily.index') }}">勤怠一覧</a></li>
+            <li><a class="header__nav-item" href="{{ route('admin.staff.index') }}">スタッフ一覧</a></li>
+            <li><a class="header__nav-item" href="{{ route('request.index') }}">申請一覧</a></li>
 
             @elseif ($navRole === 'user' && $navStatus === 'finished')
-            <li><a href="{{ route('attendance.month.index') }}">今月の出勤一覧</a></li>
-            <li><a href="{{ route('request.index') }}">申請一覧</a></li>
+            <li><a class="header__nav-item" href="{{ route('attendance.month.index') }}">今月の出勤一覧</a></li>
+            <li><a class="header__nav-item" href="{{ route('request.index') }}">申請一覧</a></li>
 
             @else
-            <li><a href="{{ route('attendance.stamp.show') }}">勤怠</a></li>
-            <li><a href="{{ route('attendance.month.index') }}">勤怠一覧</a></li>
-            <li><a href="{{ route('request.index') }}">申請</a></li>
+            <li><a class="header__nav-item" href="{{ route('attendance.stamp.show') }}">勤怠</a></li>
+            <li><a class="header__nav-item" href="{{ route('attendance.month.index') }}">勤怠一覧</a></li>
+            <li><a class="header__nav-item" href="{{ route('request.index') }}">申請</a></li>
             @endif
 
             <li>

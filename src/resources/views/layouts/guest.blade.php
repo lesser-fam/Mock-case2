@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="bg-auth">
 
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     @yield('css')
 </head>
 
-<body>
+<body class="bg-auth">
     <header class="header">
         <a href="{{ request()->is('admin/*')
             ? route('admin.login')

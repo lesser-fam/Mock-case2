@@ -42,19 +42,18 @@
                 <div>{{ $statusLabel }}</div>
                 <div>{{ $name }}</div>
                 <div>{{ $target }}</div>
-                <div class="request-list__table-memo">{{ $r->memo ?? '' }}</div>
+                <div class="request-list__table-memo" title="{{ $r->memo ?? '' }}">{{ $r->memo ?? '' }}</div>
                 <div>{{ $applied }}</div>
                 <div>
                     @if ($isAdmin)
                     <a class="btn btn--list-detail"
-                        href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">
-                        詳細
-                    </a>
+                        href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
                     @else
-                    <a class="btn btn--list-detail"
-                        href="{{ route('attendance.detail.show', ['id' => $r->attendance_id]) }}">
-                        詳細
-                    </a>
+                    @if ($r->status === 'approved')
+                    <a class="btn btn--list-detail" href="{{ route('request.user.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
+                    @else
+                    <a class="btn btn--list-detail" href="{{ route('attendance.detail.show', ['id' =>$r->attendance_id]) }}">詳細</a>
+                    @endif
                     @endif
                 </div>
             </div>

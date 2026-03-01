@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/forms/form.css') }}">
 <link rel="stylesheet" href="{{ asset('css/attendances/attendance_detail.css') }}">
 @endsection
 
@@ -9,6 +8,7 @@
 
 @include('shared.attendance_detail_form', [
 'formAction' => route('admin.attendance.update', ['id' => $attendance->id]),
+'formMethod' => 'PATCH',
 'canEdit' => !$isPending,
 'cannotEditMessage' => $isPending ? '*承認待ちのため修正はできません' : '',
 'pendingLinkUrl' => ($isPending && !empty($pendingRequestId ?? null)) ? route('request.approve.show', ['attendance_correction_request_id' => $pendingRequestId]) : null,
