@@ -19,15 +19,15 @@ chmod -R 775 storage bootstrap/cache
 ```
 
 
-# テストユーザー
+# ダミーデータ
 ※ 本アプリでは、動作確認用として、以下の初期データをシーダーで作成しています。
 - 管理者ユーザー：2人
 - 一般ユーザー：6人
-- 勤怠記録情報：(件)
+- 勤怠記録情報：3ヶ月分(出勤/休憩/退勤)
 
 **管理者ユーザー**
-| id | name    | email             |
-|----|---------|-------------------|
+| id | name    | email              |
+|----|---------|--------------------|
 | 1  | 管理者A  | admin1@example.com |
 | 2  | 管理者B  | admin2@example.com |
 
@@ -45,7 +45,6 @@ chmod -R 775 storage bootstrap/cache
 | 8  | 渡辺 六郎  | user6@example.com |
 
 ※ パスワードは全ユーザー共通で「password」です
-
 
 
 
@@ -67,52 +66,55 @@ php artisan test
 **実装済みテスト一覧**
 ```text
 01 認証機能(一般ユーザー)
-    - Test
+    - UserRegisterTest
 
 02 ログイン認証機能(一般ユーザー)
-    - Test
+    - UserLoginTest
 
 03 ログイン認証機能(管理者)
-    - Test
+    - AdminLoginTest
 
 04 日時取得機能
-    - Test
+    - UserAttendanceDateTest
 
 05 ステータス確認機能
-    - Test
+    - UserAttendanceStatusTest
 
 06 出勤機能
-    - Test
+    - UserWorkStartTest
 
 07 休憩機能
-    - Test
+    - UserBreakTest
 
 08 退勤機能
-    - Test
+    - UserWorkEndTest
 
 09 勤怠一覧情報取得機能(一般ユーザー)
-    - Test
+    - UserAttendanceListTest
 
 10 勤怠詳細情報取得機能(一般ユーザー)
-    - Test
+    - UserAttendanceDetailTest
 
 11 勤怠一覧情報修正機能(一般ユーザー)
-    - Test
+    - UserAttendanceCorrectionRequestTest
 
 12 勤怠一覧情報取得機能(管理者)
-    - Test
+    - AdminAttendanceListTest
 
 13 勤怠詳細情報取得・修正機能(管理者)
-    - Test
+    - AdminAttendanceDetailUpdateTest
 
 14 ユーザー情報取得機能(管理者)
-    - Test
+    - AdminStaffTest
 
 15 勤怠情報修正機能(管理者)
-    - Test
+    - AdminCorrectionApprovalTest
 
 16 メール認証機能
-    - AuthEmailVerificationTest
+    - UserEmailVerificationTest
+
+17 スタッフ別月次勤怠CSV出力
+    - AdminStaffMonthCsvTest
 ```
 
 

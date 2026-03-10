@@ -109,6 +109,20 @@
     border-radius: 5px;
 }
 
+.attendance-list__action {
+    text-align: right;
+    margin: var(--space-xl)  0;
+}
+
+.btn--csv {
+    display: inline-block;
+    text-align: center;
+    width: 150px;
+    padding: var(--space-xs) var(--space-s);
+    letter-spacing: 0.2em;
+    border-radius: 5px;
+}
+
 .pager-picker__input {
     display: none !important;
 }

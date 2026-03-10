@@ -2,26 +2,16 @@
 
 namespace App\Http\Requests;
 
-use Carbon\Carbon;
+use App\Support\Validation\AttendanceTimeValidator;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AdminAttendanceUpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
@@ -29,9 +19,9 @@ class AdminAttendanceUpdateRequest extends FormRequest
             'work_end_at'   => 'required|date_format:H:i',
             'memo'          => 'required|max:255',
 
-            'breaks'            => 'nullable|array',
-            'breaks.*.start'    => 'nullable|date_format:H:i|required_with:breaks.*.end',
-            'breaks.*.end'      => 'nullable|date_format:H:i|required_with:breaks.*.start',
+            'breaks'               => 'nullable|array',
+            'breaks.*.start'       => 'nullable|date_format:H:i|required_with:breaks.*.end',
+            'breaks.*.end'         => 'nullable|date_format:H:i|required_with:breaks.*.start',
         ];
     }
 
@@ -58,91 +48,11 @@ class AdminAttendanceUpdateRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($v) {
-            $startStr = $this->input('work_start_at');
-            $endStr   = $this->input('work_end_at');
+            $bag = $v->errors();
 
-            $start = null;
-            $end = null;
-
-            try {
-                if ($startStr) $start = Carbon::createFromFormat('H:i', $startStr);
-                if ($endStr) $end = Carbon::createFromFormat('H:i', $endStr);
-            } catch (\Throwable $e) {
-            }
-
-            if ($start && $end && $start->greaterThanOrEqualTo($end)) {
-                $v->errors()->add('work_start_at', '出勤時間もしくは退勤時間が不適切な値です');
-                return;
-            }
-
-            $breaks = $this->input('breaks', []);
-            if (!is_array($breaks)) $breaks = [];
-
-            $validBreaks = [];
-
-            foreach ($breaks as $i => $b) {
-                $bs = $b['start'] ?? null;
-                $be = $b['end'] ?? null;
-                if (!$bs || !$be) continue;
-
-                try {
-                    $bsC = Carbon::createFromFormat('H:i', $bs);
-                    $beC = Carbon::createFromFormat('H:i', $be);
-                } catch (\Throwable $e) {
-                    continue;
-                }
-
-                if ($bsC->greaterThanOrEqualTo($beC)) {
-                    $v->errors()->add("breaks.$i.end", '休憩時間が不適切な値です');
-                    continue;
-                }
-
-                if ($start && $end) {
-                    if ($bsC->lessThan($start) || $beC->lessThan($start)) {
-                        $v->errors()->add("breaks.$i.start", '休憩時間が不適切な値です');
-                        continue;
-                    }
-
-                    if ($bsC->greaterThan($end)) {
-                        $v->errors()->add("breaks.$i.start", '休憩時間が不適切な値です');
-                        continue;
-                    }
-
-                    if ($beC->greaterThan($end)) {
-                        $v->errors()->add("breaks.$i.end", '休憩時間もしくは退勤時間が不適切な値です');
-                        continue;
-                    }
-                }
-
-                $validBreaks[] = [
-                    'i' => $i,
-                    'start' => $bs,
-                    'end' => $be,
-                ];
-            }
-
-            usort($validBreaks, fn($a, $b) => strcmp($a['start'], $b['start']));
-            for ($k = 0; $k < count($validBreaks) - 1; $k++) {
-                if ($validBreaks[$k]['end'] > $validBreaks[$k + 1]['start']) {
-                    $v->errors()->add("breaks.{$validBreaks[$k + 1]['i']}.start", '休憩時間が重複しています');
-                    break;
-                }
-            }
-
-            if ($start && $end) {
-                $workTotal = $start->diffInMinutes($end);
-
-                $breakTotal = 0;
-                foreach ($validBreaks as $b) {
-                    $bsC = Carbon::createFromFormat('H:i', $b['start']);
-                    $beC = Carbon::createFromFormat('H:i', $b['end']);
-                    $breakTotal += $bsC->diffInMinutes($beC);
-                }
-
-                if ($breakTotal >= $workTotal) {
-                    $v->errors()->add('work_end_at', '休憩時間が勤務時間を超えています');
-                }
-            }
+            /** @var AttendanceTimeValidator $logic */
+            $logic = app(AttendanceTimeValidator::class);
+            $logic->validate($this->all(), $bag);
         });
     }
 }

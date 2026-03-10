@@ -72,7 +72,7 @@ class UserAttendanceDetailController extends Controller
         ]);
     }
 
-
+    
     public function request(AttendanceCorrectionRequestStoreRequest $request, $id)
     {
         $user = Auth::user();
@@ -82,7 +82,6 @@ class UserAttendanceDetailController extends Controller
             ->where('user_id', $user->id)
             ->firstOrFail();
 
-        // すでに pending があるなら二重申請禁止
         $latestRequest = AttendanceCorrectionRequest::query()
             ->where('attendance_id', $attendance->id)
             ->where('user_id', $user->id)

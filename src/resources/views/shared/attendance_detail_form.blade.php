@@ -11,10 +11,7 @@
             <tr class="attendance-detail__table-row is-4col">
                 <th class="attendance-detail__table-key">名前</th>
                 <td class="attendance-detail__cell">
-                    <span class="name-split cell-box">
-                        <span class="name-split__sei">{{ $person?->sei ?? '' }}</span>
-                        <span class="name-split__mei">{{ $person?->mei ?? '' }}</span>
-                    </span>
+                    <span class="name-split cell-box">{{ $person?->name ?? '' }}</span>
                 </td>
                 <td class="attendance-detail__cell is-empty"></td>
                 <td class="attendance-detail__cell is-empty"></td>

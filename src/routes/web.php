@@ -13,14 +13,6 @@ use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\StampCorrectionRequestController;
 
 
-// ===== 管理者ログイン =====
-Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
-});
-
-
-
 // ===== メール認証（一般ユーザー登録用） =====
 Route::get('/email/verify', function () {
     if (!session('verify_user_id')) abort(403);
@@ -69,6 +61,28 @@ Route::middleware(['auth', 'verified', 'user'])->group(function () {
 
 
 
+// ===== 管理者ログイン =====
+Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
+    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
+});
+
+
+
+// ===== 管理者 =====
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/attendance/list', [AdminDailyAttendanceController::class, 'index'])->name('attendance.daily.index');
+    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.show');
+    Route::patch('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
+
+    Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.index');
+    Route::get('/attendance/staff/{id}', [AdminStaffController::class, 'staffMonth'])->name('staff.month.index');
+    Route::get('/attendance/staff/{id}/csv', [AdminStaffController::class, 'staffMonthCsv'])->name('staff.month.csv');
+});
+
+
+
+
 // ===== 申請 =====
 Route::middleware(['auth'])->group(function () {
     Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('request.index');
@@ -82,16 +96,4 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'show'])->name('request.approve.show');
     Route::post('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'store'])->name('request.approve.store');
-});
-
-
-
-// ===== 管理者 =====
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/attendance/list', [AdminDailyAttendanceController::class, 'index'])->name('attendance.daily.index');
-    Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.show');
-    Route::patch('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
-
-    Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.index');
-    Route::get('/attendance/staff/{id}', [AdminStaffController::class, 'staffMonth'])->name('staff.month.index');
 });

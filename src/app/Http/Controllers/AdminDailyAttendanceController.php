@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Admin\DailyAttendanceTable;
+use App\Services\Attendance\DailyAttendanceTable;
 use App\Services\DateQueryParser;
 use Illuminate\Http\Request;
 

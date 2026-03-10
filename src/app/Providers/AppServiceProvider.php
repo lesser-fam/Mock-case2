@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('layouts.app', function ($view) {
             $user = Auth::user();
 
-            $role = $user?->role; // 'user' or 'admin'
+            $role = $user?->role;
 
             $status = 'outside';
 
@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
                     ->first();
 
                 if ($todayAttendance) {
-                    $status = $todayAttendance->status; // outside/working/breaking/finished
+                    $status = $todayAttendance->status;
                 }
             }
 
