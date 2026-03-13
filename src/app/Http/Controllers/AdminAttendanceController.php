@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AttendanceLockedException;
 use App\Http\Requests\AdminAttendanceUpdateRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrectionRequest;
 use App\Services\Attendance\AdminAttendanceUpdater;
 use Carbon\Carbon;
+
 
 class AdminAttendanceController extends Controller
 {
@@ -18,13 +20,13 @@ class AdminAttendanceController extends Controller
             ->with(['breaks', 'user'])
             ->findOrFail($id);
 
-        $pendingReq = AttendanceCorrectionRequest::query()
+        $pendingRequest = AttendanceCorrectionRequest::query()
             ->where('attendance_id', $attendance->id)
             ->where('status', 'pending')
             ->latest('id')
             ->first();
 
-        $isPending = (bool) $pendingReq;
+        $isPending = (bool) $pendingRequest;
 
         $date = $attendance->date instanceof Carbon ? $attendance->date : Carbon::parse($attendance->date);
         $yearLabel = $date->format('Y年');
@@ -48,7 +50,7 @@ class AdminAttendanceController extends Controller
             'displayWorkEnd' => $attendance->work_end_at?->format('H:i'),
             'displayMemo' => $attendance->memo ?? '',
             'isPending' => $isPending,
-            'pendingRequestId' => $pendingReq?->id,
+            'pendingRequestId' => $pendingRequest?->id,
         ]);
     }
 
@@ -66,10 +68,12 @@ class AdminAttendanceController extends Controller
                 $request->input('memo'),
                 is_array($request->input('breaks')) ? $request->input('breaks') : []
             );
-        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+        } catch (AttendanceLockedException $e) {
             return redirect()
                 ->route('admin.attendance.show', ['id' => $attendance->id])
-                ->withErrors(['common' => $e->getMessage() ?: '承認待ちのため修正はできません']);
+                ->withErrors([
+                    'common' => $e->getMessage() ?: '承認待ちのため修正はできません'
+                ]);
         }
 
         $date = $attendance->date instanceof Carbon ? $attendance->date : Carbon::parse($attendance->date);

@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminStaffController;
 use App\Http\Controllers\StampCorrectionRequestController;
 
 
+
 // ===== メール認証（一般ユーザー登録用） =====
 Route::get('/email/verify', function () {
     if (!session('verify_user_id')) abort(403);
@@ -56,7 +57,7 @@ Route::middleware(['auth', 'verified', 'user'])->group(function () {
 
     Route::get('/attendance/list', [UserAttendanceMonthController::class, 'index'])->name('attendance.month.index');
     Route::get('/attendance/detail/{id}', [UserAttendanceDetailController::class, 'show'])->name('attendance.detail.show');
-    Route::post('/attendance/detail/{id}', [UserAttendanceDetailController::class, 'request'])->name('attendance.detail.request');
+    Route::post('/attendance/detail/{id}', [UserAttendanceDetailController::class, 'store'])->name('attendance.detail.store');
 });
 
 

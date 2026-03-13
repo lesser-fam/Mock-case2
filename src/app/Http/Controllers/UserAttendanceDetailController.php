@@ -9,6 +9,7 @@ use App\Models\AttendanceCorrectionRequestBreak;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+
 class UserAttendanceDetailController extends Controller
 {
     public function show($id)
@@ -28,52 +29,10 @@ class UserAttendanceDetailController extends Controller
             ->latest('id')
             ->first();
 
-        $isPending = $latestRequest && $latestRequest->status === 'pending';
-
-        $sourceWorkStart = $isPending ? $latestRequest?->work_start_at : $attendance->work_start_at;
-        $sourceWorkEnd = $isPending ? $latestRequest?->work_end_at : $attendance->work_end_at;
-
-        if ($isPending) {
-            $breakRows = ($latestRequest?->breaks ?? collect())
-                ->sortBy('id')
-                ->map(fn($b) => [
-                    'start' => $b->break_start_at?->format('H:i'),
-                    'end'   => $b->break_end_at?->format('H:i'),
-                ])->values()->all();
-        } else {
-            $breakRows = $attendance->breaks
-                ->sortBy('id')
-                ->map(fn($b) => [
-                    'start' => $b->break_start_at?->format('H:i'),
-                    'end'   => $b->break_end_at?->format('H:i'),
-                ])->values()->all();
-
-            $breakRows[] = ['start' => null, 'end' => null];
-        }
-
-        $displayMemo = $isPending
-            ? ($latestRequest?->memo ?? '')
-            : ($attendance->memo ?? '');
-
-        $date = $attendance->date;
-        $yearLabel = $date->format('Y年');
-        $mdLabel = $date->format('n月j日');
-
-        return view('user.attendance_detail', [
-            'attendance' => $attendance,
-            'isPending' => $isPending,
-            'latestRequest' => $latestRequest,
-            'breakRows' => $breakRows,
-            'yearLabel' => $yearLabel,
-            'mdLabel' => $mdLabel,
-            'displayWorkStart' => $sourceWorkStart?->format('H:i'),
-            'displayWorkEnd' => $sourceWorkEnd?->format('H:i'),
-            'displayMemo' => $displayMemo,
-        ]);
+        return view('user.attendance_detail', $this->buildShowViewData($attendance, $latestRequest));
     }
 
-    
-    public function request(AttendanceCorrectionRequestStoreRequest $request, $id)
+    public function store(AttendanceCorrectionRequestStoreRequest $request, $id)
     {
         $user = Auth::user();
 
@@ -93,42 +52,78 @@ class UserAttendanceDetailController extends Controller
         }
 
         $date = $attendance->date;
-
-        $workStart = $request->input('work_start_at');
-        $workEnd   = $request->input('work_end_at');
-
-        $workStartAt = $date->copy()->setTimeFromTimeString($workStart);
-        $workEndAt   = $date->copy()->setTimeFromTimeString($workEnd);
+        $workStartAt = $date->copy()->setTimeFromTimeString($request->input('work_start_at'));
+        $workEndAt = $date->copy()->setTimeFromTimeString($request->input('work_end_at'));
 
         DB::transaction(function () use ($request, $attendance, $user, $date, $workStartAt, $workEndAt) {
-            $req = AttendanceCorrectionRequest::create([
+            $correctionRequest = AttendanceCorrectionRequest::create([
                 'attendance_id' => $attendance->id,
-                'user_id'       => $user->id,
-                'approved_by'   => null,
-                'date'          => $date->toDateString(),
+                'user_id' => $user->id,
+                'approved_by' => null,
+                'date' => $date->toDateString(),
                 'work_start_at' => $workStartAt,
-                'work_end_at'   => $workEndAt,
-                'memo'          => $request->input('memo'),
-                'status'        => 'pending',
+                'work_end_at' => $workEndAt,
+                'memo' => $request->input('memo'),
+                'status' => 'pending',
             ]);
 
-            $breaks = $request->input('breaks', []);
-            foreach ($breaks as $b) {
-                $bs = $b['start'] ?? null;
-                $be = $b['end'] ?? null;
+            foreach ($request->input('breaks', []) as $break) {
+                $start = $break['start'] ?? null;
+                $end = $break['end'] ?? null;
 
-                if (!$bs || !$be) {
+                if (! $start || ! $end) {
                     continue;
                 }
 
                 AttendanceCorrectionRequestBreak::create([
-                    'request_id'     => $req->id,
-                    'break_start_at' => $date->copy()->setTimeFromTimeString($bs),
-                    'break_end_at'   => $date->copy()->setTimeFromTimeString($be),
+                    'request_id' => $correctionRequest->id,
+                    'break_start_at' => $date->copy()->setTimeFromTimeString($start),
+                    'break_end_at' => $date->copy()->setTimeFromTimeString($end),
                 ]);
             }
         });
 
         return redirect()->route('attendance.detail.show', ['id' => $attendance->id]);
+    }
+
+    private function buildShowViewData(Attendance $attendance, ?AttendanceCorrectionRequest $latestRequest): array
+    {
+        $isPending = $latestRequest && $latestRequest->status === 'pending';
+        $displaySource = $isPending ? $latestRequest : $attendance;
+
+        $breakRows = $this->formatBreakRows(
+            $isPending ? $latestRequest->breaks : $attendance->breaks,
+            ! $isPending
+        );
+
+        return [
+            'attendance' => $attendance,
+            'isPending' => $isPending,
+            'latestRequest' => $latestRequest,
+            'breakRows' => $breakRows,
+            'yearLabel' => $attendance->date->format('Y年'),
+            'mdLabel' => $attendance->date->format('n月j日'),
+            'displayWorkStart' => $displaySource->work_start_at?->format('H:i'),
+            'displayWorkEnd' => $displaySource->work_end_at?->format('H:i'),
+            'displayMemo' => $displaySource->memo ?? '',
+        ];
+    }
+
+    private function formatBreakRows($breaks, bool $appendEmptyRow = false): array
+    {
+        $rows = $breaks
+            ->sortBy('id')
+            ->map(fn($break) => [
+                'start' => $break->break_start_at?->format('H:i'),
+                'end' => $break->break_end_at?->format('H:i'),
+            ])
+            ->values()
+            ->all();
+
+        if ($appendEmptyRow) {
+            $rows[] = ['start' => null, 'end' => null];
+        }
+
+        return $rows;
     }
 }

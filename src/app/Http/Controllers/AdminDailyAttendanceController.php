@@ -6,6 +6,7 @@ use App\Services\Attendance\DailyAttendanceTable;
 use App\Services\DateQueryParser;
 use Illuminate\Http\Request;
 
+
 class AdminDailyAttendanceController extends Controller
 {
     public function __construct(

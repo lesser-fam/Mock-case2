@@ -8,7 +8,7 @@ class DateQueryParser
 {
     public function parseDate(?string $dateStr, ?Carbon $fallback = null): Carbon
     {
-        $fallback = $fallback ?: now();
+        $fallback = $fallback ?? now();
 
         try {
             return $dateStr

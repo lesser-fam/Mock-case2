@@ -12,38 +12,30 @@
         <div class="form__group">
             <label class="form__label" for="name">ユーザー名</label>
             <input class="form__input" type="text" name="name" id="name" value="{{ old('name') }}">
-            <p class="form__error">
-                @error('name')
-                {{ $message }}
-                @enderror
-            </p>
+            @error('name')
+            <p class="form__error">{{ $message }}</p>
+            @enderror
         </div>
         <div class="form__group">
             <label class="form__label" for="email">メールアドレス</label>
             <input class="form__input" type="email" name="email" id="email" value="{{ old('email') }}">
-            <p class="form__error">
-                @error('email')
-                {{ $message }}
-                @enderror
-            </p>
+            @error('email')
+            <p class="form__error">{{ $message }}</p>
+            @enderror
         </div>
         <div class="form__group">
             <label class="form__label" for="password">パスワード</label>
             <input class="form__input" type="password" name="password" id="password">
-            <p class="form__error">
-                @error('password')
-                {{ $message }}
-                @enderror
-            </p>
+            @error('password')
+            <p class="form__error">{{ $message }}</p>
+            @enderror
         </div>
         <div class="form__group">
             <label class="form__label" for="password_confirmation">パスワード確認</label>
             <input class="form__input" type="password" name="password_confirmation" id="password_confirmation">
-            <p class="form__error">
-                @error('password_confirmation')
-                {{ $message }}
-                @enderror
-            </p>
+            @error('password_confirmation')
+            <p class="form__error">{{ $message }}</p>
+            @enderror
         </div>
         <input class="btn btn--form btn--black" type="submit" value="登録する">
         <a class="form__link" href="{{ route('login') }}">ログインはこちら</a>

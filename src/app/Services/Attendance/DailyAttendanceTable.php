@@ -58,7 +58,7 @@ class DailyAttendanceTable
             $start = $a?->work_start_at ? $a->work_start_at->format('H:i') : '';
             $end   = $a?->work_end_at ? $a->work_end_at->format('H:i') : '';
 
-            $hasWork = $a && $a->work_start_at && $a->work_end_at;
+            $hasWork = $a !== null && $a->work_start_at !== null && $a->work_end_at !== null;
 
             $breakMin = ($a && $a->relationLoaded('breaks'))
                 ? $this->calc->breakMinutes($a->breaks)

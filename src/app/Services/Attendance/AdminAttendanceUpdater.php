@@ -2,6 +2,7 @@
 
 namespace App\Services\Attendance;
 
+use App\Exceptions\AttendanceLockedException;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrectionRequest;
 use App\Models\BreakTime;
@@ -18,7 +19,7 @@ class AdminAttendanceUpdater
             ->exists();
 
         if ($pending) {
-            abort(409, '承認待ちのため修正はできません');
+            throw new AttendanceLockedException('承認待ちのため修正はできません');
         }
 
         $date = $attendance->date instanceof Carbon
@@ -32,7 +33,10 @@ class AdminAttendanceUpdater
         foreach ($breaksInput as $b) {
             $bs = $b['start'] ?? null;
             $be = $b['end'] ?? null;
-            if (!$bs || !$be) continue;
+
+            if (!$bs || !$be) {
+                continue;
+            }
 
             $breakRows[] = [
                 'start' => $date->copy()->setTimeFromTimeString($bs),
@@ -48,7 +52,9 @@ class AdminAttendanceUpdater
                 'status'        => 'finished',
             ]);
 
-            BreakTime::query()->where('attendance_id', $attendance->id)->delete();
+            BreakTime::query()
+                ->where('attendance_id', $attendance->id)
+                ->delete();
 
             foreach ($breakRows as $b) {
                 BreakTime::create([

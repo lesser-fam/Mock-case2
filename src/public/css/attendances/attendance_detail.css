@@ -1,3 +1,4 @@
+/* ===== 勤怠詳細・修正申請詳細レイアウト =====*/
 .attendance-detail__title {
     margin: var(--space-l) 0 var(--space-m);
     padding-left: var(--space-s);
@@ -11,7 +12,7 @@
     border-spacing: 0;
 }
 
-.attendance-detail__table-row.is-4col {
+.attendance-detail__table-row {
     display: grid;
     grid-template-columns: 350px 200px 80px 200px;
     align-items: center;
@@ -20,7 +21,7 @@
     background: #fff;
 }
 
-.attendance-detail__table-row.is-4col>td[colspan="3"] {
+.attendance-detail__table-row>td[colspan="3"] {
     grid-column: 2 / -1;
 }
 
@@ -65,11 +66,6 @@
     max-width: 140px;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.08em;
-}
-
-.name-split.cell-box {
-    justify-content: center;
-    gap: 2ch;
 }
 
 .time-input::-webkit-calendar-picker-indicator {
@@ -190,15 +186,20 @@
 
 .form__error {
     text-align: center;
+    max-width: 420px;
     color: #ffffff;
     font-size: var(--font-s);
     margin-top: var(--space-xs);
     background-color: #f05550;
 }
 
+.memo-cell .form__error {
+    margin-left: var(--space-l);
+}
+
 
 @media (max-width: 850px) {
-    .attendance-detail__table-row.is-4col {
+    .attendance-detail__table-row {
         grid-template-columns: 1fr;
         row-gap: var(--space-xs);
         padding: var(--space-m) var(--space-l);
@@ -246,7 +247,7 @@
         padding-left: 0;
     }
 
-    .attendance-detail__table-row.is-4col>td[colspan="3"] {
+    .attendance-detail__table-row>td[colspan="3"] {
         grid-column: auto;
     }
 
@@ -265,5 +266,6 @@
 
     .memo-cell .form__error {
         max-width: none;
+        margin-left: 0;
     }
 }

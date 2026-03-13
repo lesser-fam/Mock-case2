@@ -1,3 +1,4 @@
+/* ===== 月次勤怠一覧 =====*/
 .attendance-list h1 {
     margin: var(--space-l) 0 var(--space-m);
     padding-left: var(--space-s);
@@ -43,7 +44,7 @@
     font-weight: bold;
 }
 
-.attendance-list__pager span {
+.attendance-list__pager-label {
     font-size: var(--font-l);
     font-weight: bold;
 }

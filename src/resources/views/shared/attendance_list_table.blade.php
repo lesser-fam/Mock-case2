@@ -6,10 +6,10 @@ $detailRouteParams = $detailRouteParams ?? [];
 @endphp
 
 <div class="attendance-list__pager">
-    <a href="{{ route($listRouteName, array_merge($listRouteParams ?? [], ['month' => $prevMonth])) }}">←前月</a>
+    <a href="{{ route($listRouteName, array_merge($listRouteParams, ['month' => $prevMonth])) }}">←前月</a>
 
     <span class="attendance-list__pager-center">
-        <form class="pager-picker" action="{{ route($listRouteName, $listRouteParams ?? []) }}" method="GET">
+        <form class="pager-picker" action="{{ route($listRouteName, $listRouteParams) }}" method="GET">
             <input
                 id="month-picker"
                 class="pager-picker__input"
@@ -31,7 +31,7 @@ $detailRouteParams = $detailRouteParams ?? [];
         <span class="attendance-list__pager-label">{{ $baseMonth->format('Y/m') }}</span>
     </span>
 
-    <a href="{{ route($listRouteName, array_merge($listRouteParams ?? [], ['month' => $nextMonth])) }}">翌月→</a>
+    <a href="{{ route($listRouteName, array_merge($listRouteParams, ['month' => $nextMonth])) }}">翌月→</a>
 </div>
 
 <table class="attendance-list__table">

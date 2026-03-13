@@ -19,7 +19,7 @@
         </a>
     </div>
 
-    <div class="request-list__stack {{ $status === 'pending' ? 'is-pending' : 'is-approved' }}">
+    <div class="request-list__stack">
         <table class="request-list__table">
             <thead>
                 <tr class="request-list__table-row request-list__table-head">
@@ -33,29 +33,20 @@
             </thead>
             <tbody>
                 @foreach ($requests as $r)
-                @php
-                $statusLabel = $r->status === 'pending' ? '承認待ち' : '承認済み';
-                $target = $r->date ? \Carbon\Carbon::parse($r->date)->format('Y/m/d') : '';
-                $applied = $r->created_at ? $r->created_at->format('Y/m/d') : '';
-                $name = $r->applicant?->name ?? '';
-                @endphp
-
                 <tr class="request-list__table-row">
-                    <td>{{ $statusLabel }}</td>
-                    <td>{{ $name }}</td>
-                    <td>{{ $target }}</td>
+                    <td>{{ $r->status === 'pending' ? '承認待ち' : '承認済み' }}</td>
+                    <td>{{ $r->applicant?->name ?? '' }}</td>
+                    <td>{{ $r->date?->format('Y/m/d') ?? '' }}</td>
                     <td class="request-list__table-memo" title="{{ $r->memo ?? '' }}">{{ $r->memo ?? '' }}</td>
-                    <td>{{ $applied }}</td>
+                    <td>{{ $r->created_at?->format('Y/m/d') ?? '' }}</td>
                     <td>
                         @if ($isAdmin)
                         <a class="btn btn--list-detail"
                             href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
-                        @else
-                        @if ($r->status === 'approved')
+                        @elseif ($r->status === 'approved')
                         <a class="btn btn--list-detail" href="{{ route('request.user.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
                         @else
                         <a class="btn btn--list-detail" href="{{ route('attendance.detail.show', ['id' =>$r->attendance_id]) }}">詳細</a>
-                        @endif
                         @endif
                     </td>
                 </tr>

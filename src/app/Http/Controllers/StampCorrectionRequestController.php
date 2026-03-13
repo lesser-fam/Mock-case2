@@ -15,10 +15,7 @@ class StampCorrectionRequestController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        if (!$user) {
-            abort(403);
-        }
-
+        
         $status = $request->query('status', 'pending');
         if (!in_array($status, ['pending', 'approved'], true)) {
             $status = 'pending';
@@ -56,11 +53,11 @@ class StampCorrectionRequestController extends Controller
             abort(403);
         }
 
-        $req = AttendanceCorrectionRequest::query()
+        $correctionRequest = AttendanceCorrectionRequest::query()
             ->with(['applicant', 'approver', 'attendance', 'breaks'])
             ->findOrFail($attendance_correction_request_id);
 
-        return view('shared.request_show', $this->buildShowData($req, true));
+        return view('shared.request_show', $this->buildShowData($correctionRequest, true));
     }
 
     public function store(int $attendance_correction_request_id)
@@ -82,7 +79,7 @@ class StampCorrectionRequestController extends Controller
             abort(403);
         }
 
-        $req = AttendanceCorrectionRequest::query()
+        $correctionRequest = AttendanceCorrectionRequest::query()
             ->with(['applicant', 'breaks'])
             ->findOrFail($attendance_correction_request_id);
 
@@ -90,35 +87,36 @@ class StampCorrectionRequestController extends Controller
             abort(403);
         }
 
-        if ((int)$req->user_id !== (int)$user->id) {
+        if ((int)$correctionRequest->user_id !== (int)$user->id) {
             abort(403);
         }
 
-        return view('shared.request_show', $this->buildShowData($req, false));
+        return view('shared.request_show', $this->buildShowData($correctionRequest, false));
     }
 
-    private function buildShowData(AttendanceCorrectionRequest $req, bool $canApprove): array
+    private function buildShowData(AttendanceCorrectionRequest $correctionRequest, bool $canApprove): array
     {
-        $date = Carbon::parse($req->date);
+        $date = Carbon::parse($correctionRequest->date);
 
-        $breakRows = $req->breaks
+        $breakRows = $correctionRequest->breaks
             ->sortBy('id')
-            ->map(fn($b) => [
-                'start' => $b->break_start_at?->format('H:i'),
-                'end'   => $b->break_end_at?->format('H:i'),
-            ])->values()->all();
+            ->map(fn($break) => [
+                'start' => $break->break_start_at?->format('H:i'),
+                'end'   => $break->break_end_at?->format('H:i'),
+            ])
+            ->values()
+            ->all();
 
         return [
-            'request'           => $req,
-            'isPending'         => $req->status === 'pending',
+            'correctionRequest'           => $correctionRequest,
+            'isPending'         => $correctionRequest->status === 'pending',
             'canApprove'        => $canApprove,
             'yearLabel'         => $date->format('Y年'),
             'mdLabel'           => $date->format('n月j日'),
-            'displayWorkStart'  => $req->work_start_at?->format('H:i'),
-            'displayWorkEnd'    => $req->work_end_at?->format('H:i'),
-            'displayMemo'       => $req->memo ?? '',
+            'displayWorkStart'  => $correctionRequest->work_start_at?->format('H:i'),
+            'displayWorkEnd'    => $correctionRequest->work_end_at?->format('H:i'),
+            'displayMemo'       => $correctionRequest->memo ?? '',
             'breakRows'         => $breakRows,
-
         ];
     }
 }

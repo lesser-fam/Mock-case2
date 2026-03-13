@@ -1,3 +1,4 @@
+/* ===== 日次勤怠一覧 =====*/
 .admin-attendance-list__title {
     margin: var(--space-l) 0 var(--space-m);
     padding-left: var(--space-s);
@@ -43,7 +44,7 @@
     font-weight: bold;
 }
 
-.admin-attendance-list__pager span {
+.admin-attendance-list__pager-label {
     font-size: var(--font-l);
     font-weight: bold;
 }

@@ -8,7 +8,7 @@
         @endif
 
         <table class="attendance-detail__table">
-            <tr class="attendance-detail__table-row is-4col">
+            <tr class="attendance-detail__table-row">
                 <th class="attendance-detail__table-key">名前</th>
                 <td class="attendance-detail__cell">
                     <span class="name-split cell-box">{{ $person?->name ?? '' }}</span>
@@ -17,7 +17,7 @@
                 <td class="attendance-detail__cell is-empty"></td>
             </tr>
 
-            <tr class="attendance-detail__table-row is-4col">
+            <tr class="attendance-detail__table-row">
                 <th class="attendance-detail__table-key">日付</th>
                 <td class="attendance-detail__cell">
                     <span class="cell-box">{{ $yearLabel }}</span>
@@ -32,14 +32,14 @@
             $workHasError = $canEdit && ($errors->has('work_start_at') || $errors->has('work_end_at'));
             @endphp
 
-            <tr class="attendance-detail__table-row is-4col {{ $workHasError ? 'has-error' : '' }}">
+            <tr class="attendance-detail__table-row {{ $workHasError ? 'has-error' : '' }}">
                 <th class="attendance-detail__table-key">出勤・退勤</th>
                 <td class="attendance-detail__cell">
                     @if ($canEdit)
                     <input class="time-input" type="time" name="work_start_at"
                         value="{{ old('work_start_at', $attendance->work_start_at?->format('H:i')) }}">
                     @else
-                    <span class="time-display">{{ $displayWorkStart ?? '' }}</span>
+                    <span class="time-display">{{ old('work_start_at', $displayWorkStart ?? '') }}</span>
                     @endif
                 </td>
                 <td class="attendance-detail__cell sep">〜</td>
@@ -48,7 +48,7 @@
                     <input class="time-input" type="time" name="work_end_at"
                         value="{{ old('work_end_at', $attendance->work_end_at?->format('H:i')) }}">
                     @else
-                    <span class="time-display">{{ $displayWorkEnd ?? '' }}</span>
+                    <span class="time-display">{{ old('work_start_at', $displayWorkEnd ?? '') }}</span>
                     @endif
                 </td>
             </tr>
@@ -58,7 +58,7 @@
             $msgs = array_merge($errors->get('work_start_at'), $errors->get('work_end_at'));
             $msgs = array_values(array_unique($msgs));
             @endphp
-            <tr class="attendance-detail__table-row is-4col is-error-row">
+            <tr class="attendance-detail__table-row is-error-row">
                 <th class="attendance-detail__table-key"></th>
                 <td class="attendance-detail__cell row-error-wide" colspan="3">
                     @foreach ($msgs as $msg)
@@ -73,7 +73,7 @@
             $breakHasError = $canEdit && ($errors->has("breaks.$i.start") || $errors->has("breaks.$i.end") || $errors->has("breaks.$i"));
             @endphp
 
-            <tr class="attendance-detail__table-row is-4col {{ $breakHasError ? 'has-error' : '' }}">
+            <tr class="attendance-detail__table-row {{ $breakHasError ? 'has-error' : '' }}">
                 <th class="attendance-detail__table-key">休憩{{ $i === 0 ? '' : $i + 1 }}</th>
                 <td class="attendance-detail__cell">
                     @if ($canEdit)
@@ -99,7 +99,7 @@
             $msg = $errors->first("breaks.$i");
             if (!$msg) $msg = $errors->first("breaks.$i.start") ?: $errors->first("breaks.$i.end");
             @endphp
-            <tr class="attendance-detail__table-row is-4col is-error-row">
+            <tr class="attendance-detail__table-row is-error-row">
                 <th class="attendance-detail__table-key"></th>
                 <td class="attendance-detail__cell row-error-wide" colspan="3">
                     @if ($msg)
@@ -110,7 +110,7 @@
             @endif
             @endforeach
 
-            <tr class="attendance-detail__table-row is-4col">
+            <tr class="attendance-detail__table-row">
                 <th class="attendance-detail__table-key">備考</th>
                 <td class="attendance-detail__cell memo-cell" colspan="3">
                     @if ($canEdit)

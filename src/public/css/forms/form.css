@@ -1,4 +1,4 @@
-/* ===== フォーム形式 =====*/
+/* ===== 会員登録・ログイン =====*/
 .form__heading {
     text-align: center;
     margin: var(--space-xxl) auto;
@@ -14,11 +14,6 @@
     margin-bottom: var(--space-m);
 }
 
-.form__label,
-.btn {
-    font-size: var(--font-m);
-}
-
 .form__input,
 .form__link,
 .form__error {
@@ -26,8 +21,10 @@
 }
 
 .form__label {
+    display: block;
     font-weight: bold;
     text-align: left;
+    font-size: var(--font-m);
     margin-bottom: var(--space-xs);
 }
 
@@ -45,9 +42,9 @@
     margin: var(--space-s) auto var(--space-xs);
 }
 
-.form__error:empty {
+/* .form__error:empty {
     display: none;
-}
+} */
 
 .form__error {
     color: #ffffff;

@@ -7,7 +7,7 @@
 @section('content')
 
 @include('shared.attendance_detail_form', [
-'formAction' => route('attendance.detail.request', ['id' => $attendance->id]),
+'formAction' => route('attendance.detail.store', ['id' => $attendance->id]),
 'canEdit' => !$isPending,
 'cannotEditMessage' => $isPending ? '*承認待ちのため修正はできません' : '',
 'attendance' => $attendance,

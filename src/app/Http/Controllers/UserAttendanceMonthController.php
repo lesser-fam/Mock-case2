@@ -13,9 +13,8 @@ class UserAttendanceMonthController extends Controller
 
     public function index(Request $request, AttendanceMonthTable $table)
     {
-        $user = Auth::user();
-        $base = $this->parser->parseMonth($request->query('month'));
+        $baseMonth = $this->parser->parseMonth($request->query('month'));
 
-        return view('user.attendance_list', $table->build($user->id, $base));
+        return view('user.attendance_list', $table->build(Auth::id(), $baseMonth));
     }
 }

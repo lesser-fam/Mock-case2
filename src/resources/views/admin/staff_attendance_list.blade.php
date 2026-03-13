@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-<div class="container--narrow attendance_list">
+<div class="container--narrow attendance-list">
     <h1>{{ $staff->name }}さんの勤怠</h1>
 
     @if (session('status'))

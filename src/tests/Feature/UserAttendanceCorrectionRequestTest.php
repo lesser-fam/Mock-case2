@@ -76,7 +76,7 @@ class UserAttendanceCorrectionRequestTest extends TestCase
     private function postCorrection(Attendance $attendance, User $user, array $payload)
     {
         return $this->actingAs($user)->post(
-            route('attendance.detail.request', ['id' => $attendance->id]),
+            route('attendance.detail.store', ['id' => $attendance->id]),
             $payload
         );
     }

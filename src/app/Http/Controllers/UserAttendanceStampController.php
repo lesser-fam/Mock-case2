@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\BreakTime;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +15,7 @@ class UserAttendanceStampController extends Controller
     {
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
+        $now = Carbon::now();
 
         $attendance = Attendance::query()
             ->where('user_id', $user->id)
@@ -24,15 +24,24 @@ class UserAttendanceStampController extends Controller
 
         $status = $attendance?->status ?? 'outside';
 
+        $statusLabel = match ($status) {
+            'outside' => '勤務外',
+            'working' => '出勤中',
+            'breaking' => '休憩中',
+            'finished' => '退勤済',
+            default => '勤務外',
+        };
+
         return view('user.attendance', [
             'attendance' => $attendance,
             'status' => $status,
-            'dateLabel' => Carbon::now()->isoFormat('YYYY年M月D日(ddd)'),
-            'timeLabel' => Carbon::now()->format('H:i'),
+            'statusLabel' => $statusLabel,
+            'dateLabel' => $now->isoFormat('YYYY年M月D日(ddd)'),
+            'timeLabel' => $now->format('H:i'),
         ]);
     }
 
-    public function workStart(Request $request)
+    public function workStart()
     {
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
@@ -57,7 +66,7 @@ class UserAttendanceStampController extends Controller
         return redirect()->route('attendance.stamp.show');
     }
 
-    public function breakStart(Request $request)
+    public function breakStart()
     {
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
@@ -95,7 +104,7 @@ class UserAttendanceStampController extends Controller
         return redirect()->route('attendance.stamp.show');
     }
 
-    public function breakEnd(Request $request)
+    public function breakEnd()
     {
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
@@ -126,7 +135,7 @@ class UserAttendanceStampController extends Controller
         return redirect()->route('attendance.stamp.show');
     }
 
-    public function workEnd(Request $request)
+    public function workEnd()
     {
         $user = Auth::user();
         $today = Carbon::today()->toDateString();

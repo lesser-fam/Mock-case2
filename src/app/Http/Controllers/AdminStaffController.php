@@ -8,6 +8,7 @@ use App\Services\DateQueryParser;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+
 class AdminStaffController extends Controller
 {
     public function __construct(private DateQueryParser $parser) {}
@@ -28,9 +29,9 @@ class AdminStaffController extends Controller
             ->where('role', 'user')
             ->findOrFail($id);
 
-        $base = $this->parser->parseMonth($request->query('month'));
+        $baseMonth = $this->parser->parseMonth($request->query('month'));
 
-        $data = $table->build($staff->id, $base);
+        $data = $table->build($staff->id, $baseMonth);
 
         return view('admin.staff_attendance_list', array_merge($data, [
             'staff' => $staff,
@@ -47,25 +48,25 @@ class AdminStaffController extends Controller
             ->where('role', 'user')
             ->findOrFail($id);
 
-        $base = $this->parser->parseMonth($request->query('month'));
+        $baseMonth = $this->parser->parseMonth($request->query('month'));
 
-        $data = $table->build($staff->id, $base);
+        $data = $table->build($staff->id, $baseMonth);
         $days = $data['days'];
 
         $filename = sprintf(
             '%s_%s_attendance.csv',
             str_replace(' ', '_', $staff->name),
-            $base->format('Y_m')
+            $baseMonth->format('Y_m')
         );
 
-        return response()->streamDownload(function () use ($staff, $base, $days) {
+        return response()->streamDownload(function () use ($staff, $baseMonth, $days) {
             $handle = fopen('php://output', 'w');
 
             fwrite($handle, "\xEF\xBB\xBF");
 
             fputcsv($handle, ['氏名', $staff->name]);
             fputcsv($handle, ['メールアドレス', $staff->email]);
-            fputcsv($handle, ['対象月', $base->format('Y年m月')]);
+            fputcsv($handle, ['対象月', $baseMonth->format('Y年m月')]);
             fputcsv($handle, []);
 
             fputcsv($handle, ['日付', '出勤', '退勤', '休憩', '合計']);
