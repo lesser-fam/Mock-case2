@@ -56,18 +56,6 @@
     visibility: hidden;
 }
 
-.name-split {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    gap: var(--space-m);
-}
-
-.name-split__sei,
-.name-split__mei {
-    white-space: nowrap;
-}
-
 .cell-box,
 .time-display {
     box-sizing: border-box;
@@ -116,10 +104,18 @@
     text-align: left;
 }
 
-.memo-cell textarea {
+.memo-cell textarea,
+.memo-display {
     box-sizing: border-box;
+    display: block;
     width: 100%;
+    max-width: 420px;
+}
+
+.memo-cell textarea {
     resize: vertical;
+    min-height: 110px;
+    margin-left: var(--space-l);
     padding: var(--space-s);
     font-weight: bold;
     border: 1px solid #ddd;
@@ -127,11 +123,9 @@
 }
 
 .memo-display {
-    display: block;
-    max-width: 500px;
     white-space: pre-wrap;
     word-break: break-word;
-    padding-left: var(--space-s);
+    padding-left: var(--space-xxl);
 }
 
 .detail-actions {
@@ -224,10 +218,6 @@
         text-align: left;
     }
 
-    .name-split {
-        justify-content: flex-start;
-    }
-
     .time-input {
         width: 100%;
         max-width: 360px;
@@ -241,6 +231,15 @@
         display: inline-block;
         width: 100%;
         max-width: 360px;
+    }
+
+    .memo-cell textarea,
+    .memo-display {
+        max-width: none;
+    }
+
+    .memo-cell textarea {
+        margin-left: 0;
     }
 
     .memo-display {

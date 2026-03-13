@@ -28,8 +28,8 @@
                     type="button"
                     aria-label="日付を選択"
                     onclick="document.getElementById('admin-date-picker').showPicker?.();
-                            document.getElementById('admin-date-picker').focus();
-                            document.getElementById('admin-date-picker').click();">
+                             document.getElementById('admin-date-picker').focus();
+                             document.getElementById('admin-date-picker').click();">
                     📆
                 </button>
             </form>
@@ -39,36 +39,39 @@
         <a href="{{ route('admin.attendance.daily.index', ['date' => $nextDate]) }}">翌日→</a>
     </div>
 
-    <div class="admin-attendance-list__table">
-        <div class="admin-attendance-list__row admin-attendance-list__head">
-            <div>名前</div>
-            <div>出勤</div>
-            <div>退勤</div>
-            <div>休憩</div>
-            <div>合計</div>
-            <div>詳細</div>
-        </div>
-
-        @foreach ($rows as $r)
-        @php
-        $staff = $r['staff'];
-        $a = $r['attendance'];
-        @endphp
-        <div class="admin-attendance-list__row">
-            <div>{{ $staff->name }}</div>
-            <div>{{ $r['start'] }}</div>
-            <div>{{ $r['end'] }}</div>
-            <div>{{ $r['breakLabel'] }}</div>
-            <div>{{ $r['workLabel'] }}</div>
-            <div class="admin-attendance-list__detail">
-                @if ($a)
-                <a class="btn btn--list-detail" href="{{ route('admin.attendance.show', ['id' => $a->id]) }}">詳細</a>
-                @else
-                <span class="btn btn--list-detail is-disable">詳細</span>
-                @endif
-            </div>
-        </div>
-        @endforeach
-    </div>
+    <table class="admin-attendance-list__table">
+        <thead>
+            <tr class="admin-attendance-list__row admin-attendance-list__head">
+                <th scope="col">名前</th>
+                <th scope="col">出勤</th>
+                <th scope="col">退勤</th>
+                <th scope="col">休憩</th>
+                <th scope="col">合計</th>
+                <th scope="col">詳細</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($rows as $r)
+            @php
+            $staff = $r['staff'];
+            $a = $r['attendance'];
+            @endphp
+            <tr class="admin-attendance-list__row">
+                <td>{{ $staff->name }}</td>
+                <td>{{ $r['start'] }}</td>
+                <td>{{ $r['end'] }}</td>
+                <td>{{ $r['breakLabel'] }}</td>
+                <td>{{ $r['workLabel'] }}</td>
+                <td class="admin-attendance-list__detail">
+                    @if ($a)
+                    <a class="btn btn--list-detail" href="{{ route('admin.attendance.show', ['id' => $a->id]) }}">詳細</a>
+                    @else
+                    <span class="btn btn--list-detail is-disable">詳細</span>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 @endsection

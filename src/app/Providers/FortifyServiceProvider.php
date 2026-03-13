@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
-use App\Http\Requests\FortifyUserLoginRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Responses\LoginResponse;
 use App\Http\Responses\LogoutResponse;
 use App\Http\Responses\RegisterResponse;
@@ -50,7 +50,7 @@ class FortifyServiceProvider extends ServiceProvider
                 : view('user.login');
         });
 
-        $this->app->bind(FortifyLoginRequest::class, FortifyUserLoginRequest::class);
+        $this->app->bind(FortifyLoginRequest::class, LoginRequest::class);
 
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(10)->by(

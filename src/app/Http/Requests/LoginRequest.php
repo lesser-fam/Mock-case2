@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 
-class FortifyUserLoginRequest extends FortifyLoginRequest
+class LoginRequest extends FortifyLoginRequest
 {
     /**
      * Determine if the user is authorized to make this request.

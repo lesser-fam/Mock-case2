@@ -34,34 +34,36 @@ $detailRouteParams = $detailRouteParams ?? [];
     <a href="{{ route($listRouteName, array_merge($listRouteParams ?? [], ['month' => $nextMonth])) }}">翌月→</a>
 </div>
 
-<div class="attendance-list__table">
-    <div class="attendance-list__table-row attendance-list__table-head">
-        <div>日付</div>
-        <div>出勤</div>
-        <div>退勤</div>
-        <div>休憩</div>
-        <div>合計</div>
-        <div>詳細</div>
-    </div>
-
-    @foreach ($days as $row)
-    @php
-    $a = $row['attendance'];
-    @endphp
-
-    <div class="attendance-list__table-row">
-        <div>{{ $row['dateLabel'] }}</div>
-        <div>{{ $row['start'] }}</div>
-        <div>{{ $row['end'] }}</div>
-        <div>{{ $row['breakLabel'] }}</div>
-        <div>{{ $row['workLabel'] }}</div>
-        <div class="attendance-list__detail">
-            @if($a)
-            <a class="btn btn--list-detail" href="{{ route($detailRouteName, array_merge($detailRouteParams, ['id' => $a->id])) }}">詳細</a>
-            @else
-            <span class="btn btn--list-detail is-disable">詳細</span>
-            @endif
-        </div>
-    </div>
-    @endforeach
-</div>
+<table class="attendance-list__table">
+    <thead>
+        <tr class="attendance-list__table-row attendance-list__table-head">
+            <th scope="col">日付</th>
+            <th scope="col">出勤</th>
+            <th scope="col">退勤</th>
+            <th scope="col">休憩</th>
+            <th scope="col">合計</th>
+            <th scope="col">詳細</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($days as $row)
+        @php
+        $a = $row['attendance'];
+        @endphp
+        <tr class="attendance-list__table-row">
+            <td>{{ $row['dateLabel'] }}</td>
+            <td>{{ $row['start'] }}</td>
+            <td>{{ $row['end'] }}</td>
+            <td>{{ $row['breakLabel'] }}</td>
+            <td>{{ $row['workLabel'] }}</td>
+            <td class="attendance-list__detail">
+                @if($a)
+                <a class="btn btn--list-detail" href="{{ route($detailRouteName, array_merge($detailRouteParams, ['id' => $a->id])) }}">詳細</a>
+                @else
+                <span class="btn btn--list-detail is-disable">詳細</span>
+                @endif
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>

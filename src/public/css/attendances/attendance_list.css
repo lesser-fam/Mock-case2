@@ -49,44 +49,72 @@
 }
 
 .attendance-list__table {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    width: 100%;
     margin-top: var(--space-xl);
+    border-collapse: separate;
+    border-spacing: 0 3px;
+    table-layout: fixed;
 }
 
-.attendance-list__table-head {
-    margin-bottom: 1px;
-    border-radius: 10px 10px 0 0;
-}
-
-.attendance-list__table-head div:first-child {
-    padding-left: var(--space-s);
-}
-
-.attendance-list__table-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 0.8fr;
-    align-items: center;
-    min-height: var(--space-xl);
+.attendance-list__table-head th {
     padding: var(--space-s) var(--space-l);
     background: #fff;
-}
-
-.attendance-list__table-row:last-child {
-    border-radius: 0 0 10px 10px;
-}
-
-.attendance-list__table-row div {
-    text-align: center;
     color: #777;
     font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
     white-space: nowrap;
 }
 
-.attendance-list__table-row div:first-child {
-    text-align: left;
-    padding-left: var(--space-s);
+.attendance-list__table-head th:first-child {
+    border-top-left-radius: 10px;
+}
+
+.attendance-list__table-head th:last-child {
+    border-top-right-radius: 10px;
+}
+
+.attendance-list__table-row td {
+    padding: var(--space-s) var(--space-l);
+    background: #fff;
+    color: #777;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.attendance-list__table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.attendance-list__table tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.attendance-list__table th:nth-child(1),
+.attendance-list__table td:nth-child(1) {
+    width: 24%;
+}
+
+.attendance-list__table th:nth-child(2),
+.attendance-list__table td:nth-child(2),
+.attendance-list__table th:nth-child(3),
+.attendance-list__table td:nth-child(3),
+.attendance-list__table th:nth-child(4),
+.attendance-list__table td:nth-child(4),
+.attendance-list__table th:nth-child(5),
+.attendance-list__table td:nth-child(5) {
+    width: 15.5%;
+}
+
+.attendance-list__table th:nth-child(6),
+.attendance-list__table td:nth-child(6) {
+    width: 14%;
+}
+
+.attendance-list__detail {
+    text-align: center;
 }
 
 .btn--list-detail {
@@ -111,7 +139,7 @@
 
 .attendance-list__action {
     text-align: right;
-    margin: var(--space-xl)  0;
+    margin: var(--space-xl) 0;
 }
 
 .btn--csv {
@@ -128,18 +156,33 @@
 }
 
 @media (max-width: 850px) {
-    .attendance-list__table-row {
-        grid-template-columns: 1.1fr 0.9fr 0.9fr 0.9fr 0.9fr 0.8fr;
+
+    .attendance-list__table-head th,
+    .attendance-list__table-row td {
         padding: var(--space-xs) var(--space-l);
     }
 
-    .attendance-list__table-row>div {
-        min-width: 0;
-    }
-
-    .attendance-list__table-row>div:first-child {
+    .attendance-list__table th:nth-child(1),
+    .attendance-list__table td:nth-child(1) {
+        width: 25%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+
+    .attendance-list__table th:nth-child(2),
+    .attendance-list__table td:nth-child(2),
+    .attendance-list__table th:nth-child(3),
+    .attendance-list__table td:nth-child(3),
+    .attendance-list__table th:nth-child(4),
+    .attendance-list__table td:nth-child(4),
+    .attendance-list__table th:nth-child(5),
+    .attendance-list__table td:nth-child(5) {
+        width: 15%;
+    }
+
+    .attendance-list__table th:nth-child(6),
+    .attendance-list__table td:nth-child(6) {
+        width: 15%;
     }
 }

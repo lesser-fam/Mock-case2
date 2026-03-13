@@ -8,28 +8,28 @@
 <div class="container--narrow staff-list">
     <h1 class="staff-list__title">スタッフ一覧</h1>
 
-    <div class="staff-list__table">
-        <div class="staff-list__table-row staff-list__table-head">
-            <div>名前</div>
-            <div>メールアドレス</div>
-            <div>月次勤怠</div>
-        </div>
-
-        @foreach ($staffs as $staff)
-        <div class="staff-list__table-row">
-            <div class="staff-list__cell">{{ $staff->name }}</div>
-            <div class="staff-list__cell staff-list__email" title="{{ $staff->email }}">{{ $staff->email }}</div>
-            <div class="staff-list__cell">
-                <a class="btn btn--list-detail"
-                    href="{{ route('admin.staff.month.index', ['id' => $staff->id]) }}">
-                    詳細
-                </a>
-            </div>
-        </div>
-        @endforeach
-    </div>
-
-
-
+    <table class="staff-list__table">
+        <thead>
+            <tr class="staff-list__table-row staff-list__table-head">
+                <th scope="col">名前</th>
+                <th scope="col">メールアドレス</th>
+                <th scope="col">月次勤怠</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($staffs as $staff)
+            <tr class="staff-list__table-row">
+                <td class="staff-list__cell">{{ $staff->name }}</td>
+                <td class="staff-list__cell staff-list__email" title="{{ $staff->email }}">{{ $staff->email }}</td>
+                <td class="staff-list__cell">
+                    <a class="btn btn--list-detail"
+                        href="{{ route('admin.staff.month.index', ['id' => $staff->id]) }}">
+                        詳細
+                    </a>
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
 </div>
 @endsection

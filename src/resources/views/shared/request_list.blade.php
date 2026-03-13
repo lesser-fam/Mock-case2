@@ -20,49 +20,62 @@
     </div>
 
     <div class="request-list__stack {{ $status === 'pending' ? 'is-pending' : 'is-approved' }}">
-        <div class="request-list__table">
-            <div class="request-list__table-row request-list__table-head">
-                <div>状態</div>
-                <div>名前</div>
-                <div>対象日時</div>
-                <div>申請理由</div>
-                <div>申請日時</div>
-                <div>詳細</div>
-            </div>
+        <table class="request-list__table">
+            <thead>
+                <tr class="request-list__table-row request-list__table-head">
+                    <th scope="col">状態</th>
+                    <th scope="col">名前</th>
+                    <th scope="col">対象日時</th>
+                    <th scope="col">申請理由</th>
+                    <th scope="col">申請日時</th>
+                    <th scope="col">詳細</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($requests as $r)
+                @php
+                $statusLabel = $r->status === 'pending' ? '承認待ち' : '承認済み';
+                $target = $r->date ? \Carbon\Carbon::parse($r->date)->format('Y/m/d') : '';
+                $applied = $r->created_at ? $r->created_at->format('Y/m/d') : '';
+                $name = $r->applicant?->name ?? '';
+                @endphp
 
-            @foreach ($requests as $r)
-            @php
-            $statusLabel = $r->status === 'pending' ? '承認待ち' : '承認済み';
-            $target = $r->date ? \Carbon\Carbon::parse($r->date)->format('Y/m/d') : '';
-            $applied = $r->created_at ? $r->created_at->format('Y/m/d') : '';
-            $name = $r->applicant?->name ?? '';
-            @endphp
-
-            <div class="request-list__table-row">
-                <div>{{ $statusLabel }}</div>
-                <div>{{ $name }}</div>
-                <div>{{ $target }}</div>
-                <div class="request-list__table-memo" title="{{ $r->memo ?? '' }}">{{ $r->memo ?? '' }}</div>
-                <div>{{ $applied }}</div>
-                <div>
-                    @if ($isAdmin)
-                    <a class="btn btn--list-detail"
-                        href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
-                    @else
-                    @if ($r->status === 'approved')
-                    <a class="btn btn--list-detail" href="{{ route('request.user.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
-                    @else
-                    <a class="btn btn--list-detail" href="{{ route('attendance.detail.show', ['id' =>$r->attendance_id]) }}">詳細</a>
-                    @endif
-                    @endif
-                </div>
-            </div>
-            @endforeach
-        </div>
+                <tr class="request-list__table-row">
+                    <td>{{ $statusLabel }}</td>
+                    <td>{{ $name }}</td>
+                    <td>{{ $target }}</td>
+                    <td class="request-list__table-memo" title="{{ $r->memo ?? '' }}">{{ $r->memo ?? '' }}</td>
+                    <td>{{ $applied }}</td>
+                    <td>
+                        @if ($isAdmin)
+                        <a class="btn btn--list-detail"
+                            href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
+                        @else
+                        @if ($r->status === 'approved')
+                        <a class="btn btn--list-detail" href="{{ route('request.user.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
+                        @else
+                        <a class="btn btn--list-detail" href="{{ route('attendance.detail.show', ['id' =>$r->attendance_id]) }}">詳細</a>
+                        @endif
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 
-    <div class="pager">
-        {{ $requests->links() }}
+    <div class="request-list__pager">
+        @if ($requests->onFirstPage())
+        <span class="pager-btn is-disabled">← 前</span>
+        @else
+        <a class="pager-btn" href="{{ $requests->previousPageUrl() }}">← 前</a>
+        @endif
+
+        @if ($requests->hasMorePages())
+        <a class="pager-btn" href="{{ $requests->nextPageUrl() }}">次 →</a>
+        @else
+        <span class="pager-btn is-disabled">次 →</span>
+        @endif
     </div>
 </div>
 @endsection

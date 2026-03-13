@@ -12,15 +12,34 @@
 
 <body class="bg-app">
     <header class="header">
-        <a href="{{ auth()->user()->role === 'admin'
-            ? route('admin.attendance.daily.index')
-            : route('attendance.stamp.show')
-        }}">
+
+        @php
+        if (!auth()->check()) {
+        $homeUrl = route('login');
+        } elseif (auth()->user()->role === 'admin') {
+        $homeUrl = route('admin.attendance.daily.index');
+        }else {
+        $homeUrl = route('attendance.stamp.show');
+        }
+        @endphp
+
+        <a href="{{ $homeUrl }}">
             <img class="header__logo" src="{{ asset('images/logo.png') }}" alt="ロゴ">
         </a>
 
         @auth
-        <ul class="header__nav">
+        <button
+            type="button"
+            class="header__menu-btn"
+            aria-label="メニューを開く"
+            aria-controls="header-nav"
+            aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <ul id="header-nav" class="header__nav">
             @if ($navRole === 'admin')
             <li><a class="header__nav-item" href="{{ route('admin.attendance.daily.index') }}">勤怠一覧</a></li>
             <li><a class="header__nav-item" href="{{ route('admin.staff.index') }}">スタッフ一覧</a></li>
@@ -48,6 +67,22 @@
     </header>
 
     @yield('content')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.querySelector('.header__menu-btn');
+            const nav = document.querySelector('.header__nav');
+
+            if (!menuButton || !nav) return;
+
+            menuButton.addEventListener('click', function() {
+                nav.classList.toggle('is-open');
+
+                const expanded = nav.classList.contains('is-open');
+                menuButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            });
+        });
+    </script>
 
 </body>
 
