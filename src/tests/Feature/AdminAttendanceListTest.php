@@ -77,8 +77,8 @@ class AdminAttendanceListTest extends TestCase
 
         $admin = $this->admin();
 
-        $u1 = $this->staff(['name' => 'ユーザー1']);
-        $u2 = $this->staff(['name' => 'ユーザー2']);
+        $u1 = $this->staff(['name' => 'ユーザー1']); //勤怠記録有
+        $u2 = $this->staff(['name' => 'ユーザー2']); //勤怠未作成
 
         $date = '2026-03-03';
 
@@ -150,10 +150,32 @@ class AdminAttendanceListTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 3, 3, 9, 0, 0, 'Asia/Tokyo'));
 
         $admin = $this->admin();
-        $this->staff(['name' => 'ユーザー1']);
+        $user = $this->staff(['name' => 'ユーザー1']);
 
         $base = '2026-03-03';
         $prev = '2026-03-02';
+
+        $prevAttendance = Attendance::factory()
+            ->for($user, 'user')
+            ->forDate($prev)
+            ->finished('09:00', '18:00')
+            ->create();
+
+        BreakTime::factory()
+            ->forAttendance($prevAttendance)
+            ->timeRange('12:00', '13:00')
+            ->create();
+
+        $baseAttendance = Attendance::factory()
+            ->for($user, 'user')
+            ->forDate($base)
+            ->finished('10:00', '19:00')
+            ->create();
+
+        BreakTime::factory()
+            ->forAttendance($baseAttendance)
+            ->timeRange('13:00', '13:30')
+            ->create();
 
         $res = $this->actingAs($admin)->get(route('admin.attendance.daily.index', ['date' => $base]));
         $res->assertStatus(200);
@@ -164,6 +186,17 @@ class AdminAttendanceListTest extends TestCase
         $res2->assertSee('2026年3月2日の勤怠', false);
         $res2->assertSee('2026/03/02', false);
         $res2->assertSee('value="2026-03-02"', false);
+
+        $res2->assertSee('ユーザー1', false);
+        $res2->assertSee('09:00', false);
+        $res2->assertSee('18:00', false);
+        $res2->assertSee($this->hmLabel(60), false);
+        $res2->assertSee($this->hmLabel(480), false);
+
+        $res2->assertDontSee('10:00', false);
+        $res2->assertDontSee('19:00', false);
+        $res2->assertDontSee($this->hmLabel(30), false);
+        $res2->assertDontSee($this->hmLabel(510), false);
     }
 
     /**
@@ -174,10 +207,32 @@ class AdminAttendanceListTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 3, 3, 9, 0, 0, 'Asia/Tokyo'));
 
         $admin = $this->admin();
-        $this->staff(['name' => 'ユーザー1']);
+        $user = $this->staff(['name' => 'ユーザー1']);
 
         $base = '2026-03-03';
         $next = '2026-03-04';
+
+        $baseAttendance = Attendance::factory()
+            ->for($user, 'user')
+            ->forDate($base)
+            ->finished('09:00', '18:00')
+            ->create();
+
+        BreakTime::factory()
+            ->forAttendance($baseAttendance)
+            ->timeRange('12:00', '13:00')
+            ->create();
+
+        $nextAttendance = Attendance::factory()
+            ->for($user, 'user')
+            ->forDate($next)
+            ->finished('10:00', '19:00')
+            ->create();
+
+        BreakTime::factory()
+            ->forAttendance($nextAttendance)
+            ->timeRange('13:00', '13:30')
+            ->create();
 
         $res = $this->actingAs($admin)->get(route('admin.attendance.daily.index', ['date' => $base]));
         $res->assertStatus(200);
@@ -188,5 +243,16 @@ class AdminAttendanceListTest extends TestCase
         $res2->assertSee('2026年3月4日の勤怠', false);
         $res2->assertSee('2026/03/04', false);
         $res2->assertSee('value="2026-03-04"', false);
+
+        $res2->assertSee('ユーザー1', false);
+        $res2->assertSee('10:00', false);
+        $res2->assertSee('19:00', false);
+        $res2->assertSee($this->hmLabel(30), false);
+        $res2->assertSee($this->hmLabel(510), false);
+
+        $res2->assertDontSee('09:00', false);
+        $res2->assertDontSee('18:00', false);
+        $res2->assertDontSee($this->hmLabel(60), false);
+        $res2->assertDontSee($this->hmLabel(480), false);
     }
 }

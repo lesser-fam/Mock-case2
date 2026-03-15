@@ -56,10 +56,7 @@ class UserLoginTest extends TestCase
         ]);
 
         $res->assertSessionHasErrors(['password']);
-        $this->assertSame(
-            'パスワードを入力してください',
-            session('errors')->first('password')
-        );
+        $this->assertSame( 'パスワードを入力してください', session('errors')->first('password'));
     }
 
     /**
@@ -74,10 +71,8 @@ class UserLoginTest extends TestCase
             'password' => 'password',
         ]);
 
-        $res->assertSessionHasErrors([
-            'email' => 'ログイン情報が登録されていません',
-        ]);
-        
+        $res->assertSessionHasErrors([ 'email' => 'ログイン情報が登録されていません' ]);
+
         $this->assertGuest();
     }
 
@@ -93,9 +88,7 @@ class UserLoginTest extends TestCase
             'password' => 'wrong',
         ]);
 
-        $res->assertSessionHasErrors([
-            'email' => 'ログイン情報が登録されていません',
-        ]);
+        $res->assertSessionHasErrors([ 'email' => 'ログイン情報が登録されていません' ]);
 
         $this->assertGuest();
     }

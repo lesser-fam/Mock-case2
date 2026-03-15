@@ -21,7 +21,7 @@ class CreateAttendanceCorrectionRequestsTable extends Migration
             $table->date('date');
             $table->dateTime('work_start_at')->nullable();
             $table->dateTime('work_end_at')->nullable();
-            $table->text('memo')->nullable();
+            $table->string('memo')->nullable();
             $table->string('status'); // pending / approved
             $table->timestamps();
         });

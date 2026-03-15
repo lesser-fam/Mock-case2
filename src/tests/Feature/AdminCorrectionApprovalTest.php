@@ -174,11 +174,11 @@ class AdminCorrectionApprovalTest extends TestCase
         $res->assertDontSee('承認済申請', false);
 
         $res->assertSee(route('request.approve.show', [
-            'attendance_correction_request_id' => $pending1->id,
+            'attendance_correct_request_id' => $pending1->id,
         ]), false);
 
         $res->assertSee(route('request.approve.show', [
-            'attendance_correction_request_id' => $pending2->id,
+            'attendance_correct_request_id' => $pending2->id,
         ]), false);
     }
 
@@ -238,15 +238,17 @@ class AdminCorrectionApprovalTest extends TestCase
         $res->assertSee('2026/03/02', false);
         $res->assertSee('承認済A', false);
         $res->assertSee('承認済B', false);
+        $res->assertSee($approved1->created_at->format('Y/m/d'), false);
+        $res->assertSee($approved2->created_at->format('Y/m/d'), false);
 
         $res->assertDontSee('未承認申請', false);
 
         $res->assertSee(route('request.approve.show', [
-            'attendance_correction_request_id' => $approved1->id,
+            'attendance_correct_request_id' => $approved1->id,
         ]), false);
 
         $res->assertSee(route('request.approve.show', [
-            'attendance_correction_request_id' => $approved2->id,
+            'attendance_correct_request_id' => $approved2->id,
         ]), false);
     }
 
@@ -275,7 +277,7 @@ class AdminCorrectionApprovalTest extends TestCase
         $this->addRequestBreak($request, '12:30', '13:00');
 
         $res = $this->actingAs($admin)->get(route('request.approve.show', [
-            'attendance_correction_request_id' => $request->id,
+            'attendance_correct_request_id' => $request->id,
         ]));
 
         $res->assertStatus(200);
@@ -318,12 +320,12 @@ class AdminCorrectionApprovalTest extends TestCase
         $this->addRequestBreak($request, '15:00', '15:15');
 
         $res = $this->actingAs($admin)->post(route('request.approve.store', [
-            'attendance_correction_request_id' => $request->id,
+            'attendance_correct_request_id' => $request->id,
         ]));
 
         $res->assertStatus(302);
         $res->assertRedirect(route('request.approve.show', [
-            'attendance_correction_request_id' => $request->id,
+            'attendance_correct_request_id' => $request->id,
         ]));
 
         $this->assertDatabaseHas('attendance_correction_requests', [
@@ -350,7 +352,7 @@ class AdminCorrectionApprovalTest extends TestCase
         $this->assertSame('15:15', $breaks[1]->break_end_at?->format('H:i'));
 
         $detail = $this->actingAs($admin)->get(route('request.approve.show', [
-            'attendance_correction_request_id' => $request->id,
+            'attendance_correct_request_id' => $request->id,
         ]));
 
         $detail->assertStatus(200);

@@ -95,11 +95,11 @@ class UserAttendanceListTest extends TestCase
         $res->assertSee('03/15(日)', false);
         $res->assertSee('10:00', false);
         $res->assertSee('19:00', false);
-        
+
         $res->assertSee('03/31(火)', false);
         $res->assertSee('08:30', false);
         $res->assertSee('17:30', false);
-        
+
         $res->assertSee('1:00', false);
         $res->assertSee('8:00', false);
     }
@@ -144,7 +144,14 @@ class UserAttendanceListTest extends TestCase
         $res->assertSee('value="2026-02"', false);
 
         $res->assertSee('02/05(木)', false);
+        $res->assertSee('09:00', false);
+        $res->assertSee('18:00', false);
         $res->assertSee('02/20(金)', false);
+        $res->assertSee('10:00', false);
+        $res->assertSee('19:00', false);
+        $res->assertSee('1:00', false);
+        $res->assertSee('8:00', false);
+
 
         $res->assertDontSee('03/03(火)', false);
         $res->assertDontSee('09:05', false);
@@ -175,7 +182,13 @@ class UserAttendanceListTest extends TestCase
         $res->assertSee('value="2026-04"', false);
 
         $res->assertSee('04/02(木)', false);
+        $res->assertSee('09:00', false);
+        $res->assertSee('18:00', false);
         $res->assertSee('04/28(火)', false);
+        $res->assertSee('10:00', false);
+        $res->assertSee('19:00', false);
+        $res->assertSee('1:00', false);
+        $res->assertSee('8:00', false);
 
         $res->assertDontSee('03/03(火)', false);
         $res->assertDontSee('09:05', false);

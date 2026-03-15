@@ -206,7 +206,13 @@ class AdminStaffTest extends TestCase
         $res->assertSee('2026/02', false);
 
         $res->assertSee('02/03(火)', false);
+        $res->assertSee('09:00', false);
+        $res->assertSee('18:00', false);
         $res->assertSee('02/20(金)', false);
+        $res->assertSee('10:00', false);
+        $res->assertSee('19:00', false);
+        $res->assertSee('1:00', false);
+        $res->assertSee('0:30', false);
 
         $res->assertDontSee('03/05(木)', false);
         $res->assertDontSee('2026/03', false);
@@ -245,7 +251,13 @@ class AdminStaffTest extends TestCase
         $res->assertSee('2026/04', false);
 
         $res->assertSee('04/01(水)', false);
+        $res->assertSee('10:00', false);
+        $res->assertSee('19:00', false);
         $res->assertSee('04/18(土)', false);
+        $res->assertSee('08:30', false);
+        $res->assertSee('17:30', false);
+        $res->assertSee('0:30', false);
+        $res->assertSee('1:00', false);
 
         $res->assertDontSee('03/05(木)', false);
         $res->assertDontSee('2026/03', false);

@@ -42,9 +42,9 @@
                     <td>
                         @if ($isAdmin)
                         <a class="btn btn--list-detail"
-                            href="{{ route('request.approve.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
+                            href="{{ route('request.approve.show', ['attendance_correct_request_id' => $r->id]) }}">詳細</a>
                         @elseif ($r->status === 'approved')
-                        <a class="btn btn--list-detail" href="{{ route('request.user.show', ['attendance_correction_request_id' => $r->id]) }}">詳細</a>
+                        <a class="btn btn--list-detail" href="{{ route('request.user.show', ['attendance_correct_request_id' => $r->id]) }}">詳細</a>
                         @else
                         <a class="btn btn--list-detail" href="{{ route('attendance.detail.show', ['id' =>$r->attendance_id]) }}">詳細</a>
                         @endif

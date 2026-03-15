@@ -11,7 +11,7 @@
 'formMethod' => 'PATCH',
 'canEdit' => !$isPending,
 'cannotEditMessage' => $isPending ? '*承認待ちのため修正はできません' : '',
-'pendingLinkUrl' => ($isPending && !empty($pendingRequestId ?? null)) ? route('request.approve.show', ['attendance_correction_request_id' => $pendingRequestId]) : null,
+'pendingLinkUrl' => ($isPending && !empty($pendingRequestId ?? null)) ? route('request.approve.show', ['attendance_correct_request_id' => $pendingRequestId]) : null,
 'attendance' => $attendance,
 'person' => $attendance->user,
 'yearLabel' => $yearLabel,

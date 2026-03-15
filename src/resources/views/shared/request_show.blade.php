@@ -63,7 +63,7 @@
 
     <div class="detail-actions">
         @if(($canApprove ?? false) && ($isPending ?? false))
-        <form method="POST" action="{{ route('request.approve.store', ['attendance_correction_request_id' => $correctionRequest->id]) }}">
+        <form method="POST" action="{{ route('request.approve.store', ['attendance_correct_request_id' => $correctionRequest->id]) }}">
             @csrf
             <button type="submit" class="btn btn--approve btn--black">承認</button>
         </form>

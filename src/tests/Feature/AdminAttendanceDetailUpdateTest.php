@@ -120,10 +120,7 @@ class AdminAttendanceDetailUpdateTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['work_start_at']);
-        $this->assertSame(
-            '出勤時間もしくは退勤時間が不適切な値です',
-            session('errors')->first('work_start_at')
-        );
+        $this->assertSame('出勤時間もしくは退勤時間が不適切な値です', session('errors')->first('work_start_at'));
     }
 
     /** @test */
@@ -143,10 +140,7 @@ class AdminAttendanceDetailUpdateTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['work_start_at']);
-        $this->assertSame(
-            '出勤時間もしくは退勤時間が不適切な値です',
-            session('errors')->first('work_start_at')
-        );
+        $this->assertSame('出勤時間もしくは退勤時間が不適切な値です', session('errors')->first('work_start_at'));
     }
 
     /** @test */
@@ -168,10 +162,7 @@ class AdminAttendanceDetailUpdateTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['breaks.0']);
-        $this->assertSame(
-            '休憩時間が不適切な値です',
-            session('errors')->first('breaks.0')
-        );
+        $this->assertSame('休憩時間が不適切な値です', session('errors')->first('breaks.0'));
     }
 
     /** @test */
@@ -193,10 +184,7 @@ class AdminAttendanceDetailUpdateTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['breaks.0']);
-        $this->assertSame(
-            '休憩時間が不適切な値です',
-            session('errors')->first('breaks.0')
-        );
+        $this->assertSame('休憩時間が不適切な値です', session('errors')->first('breaks.0'));
     }
 
     /** @test */
@@ -218,10 +206,7 @@ class AdminAttendanceDetailUpdateTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['breaks.0']);
-        $this->assertSame(
-            '休憩時間もしくは退勤時間が不適切な値です',
-            session('errors')->first('breaks.0')
-        );
+        $this->assertSame('休憩時間もしくは退勤時間が不適切な値です', session('errors')->first('breaks.0'));
     }
 
     /** @test */
@@ -241,9 +226,6 @@ class AdminAttendanceDetailUpdateTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['memo']);
-        $this->assertSame(
-            '備考を記入してください',
-            session('errors')->first('memo')
-        );
+        $this->assertSame('備考を記入してください', session('errors')->first('memo'));
     }
 }

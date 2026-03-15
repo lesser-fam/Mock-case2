@@ -21,7 +21,7 @@ class RegisterRequest extends FormRequest
             'name' => $name,
         ]);
     }
-    
+
     public function rules()
     {
         return [

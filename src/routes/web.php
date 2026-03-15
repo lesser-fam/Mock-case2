@@ -88,13 +88,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 Route::middleware(['auth'])->group(function () {
     Route::get('/stamp_correction_request/list', [StampCorrectionRequestController::class, 'index'])->name('request.index');
 
-    Route::get('/stamp_correction_request/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'showForUser'])->name('request.user.show');
+    Route::get('/stamp_correction_request/{attendance_correct_request_id}', [StampCorrectionRequestController::class, 'showForUser'])->name('request.user.show');
 });
 
 
 
 // ===== 承認 =====
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'show'])->name('request.approve.show');
-    Route::post('/stamp_correction_request/approve/{attendance_correction_request_id}', [StampCorrectionRequestController::class, 'store'])->name('request.approve.store');
+    Route::get('/stamp_correction_request/approve/{attendance_correct_request_id}', [StampCorrectionRequestController::class, 'show'])->name('request.approve.show');
+    Route::post('/stamp_correction_request/approve/{attendance_correct_request_id}', [StampCorrectionRequestController::class, 'store'])->name('request.approve.store');
 });

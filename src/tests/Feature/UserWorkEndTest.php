@@ -61,6 +61,7 @@ class UserWorkEndTest extends TestCase
 
         $res = $this->actingAs($me)->get(route('attendance.stamp.show'));
         $res->assertSee('退勤済', false);
+        $res->assertSee('お疲れ様でした。', false);
     }
 
     /**

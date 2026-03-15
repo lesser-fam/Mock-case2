@@ -31,9 +31,10 @@ class UserAttendanceDateTest extends TestCase
         Carbon::setTestNow(Carbon::create(2026, 3, 3, 9, 5, 0, 'Asia/Tokyo'));
 
         $user = User::factory()->user()->create();
+        $now = Carbon::now();
 
-        $expectedDate = Carbon::now()->isoFormat('YYYY年M月D日(ddd)');
-        $expectedTime = Carbon::now()->format('H:i');
+        $expectedDate = $now->isoFormat('YYYY年M月D日(ddd)');
+        $expectedTime = $now->format('H:i');
 
         $res = $this->actingAs($user)->get(route('attendance.stamp.show'));
 

@@ -46,7 +46,7 @@ class StampCorrectionRequestController extends Controller
         ]);
     }
 
-    public function show($attendance_correction_request_id)
+    public function show($attendance_correct_request_id)
     {
         $user = Auth::user();
         if (!$user || $user->role !== 'admin') {
@@ -55,24 +55,24 @@ class StampCorrectionRequestController extends Controller
 
         $correctionRequest = AttendanceCorrectionRequest::query()
             ->with(['applicant', 'approver', 'attendance', 'breaks'])
-            ->findOrFail($attendance_correction_request_id);
+            ->findOrFail($attendance_correct_request_id);
 
         return view('shared.request_show', $this->buildShowData($correctionRequest, true));
     }
 
-    public function store(int $attendance_correction_request_id)
+    public function store(int $attendance_correct_request_id)
     {
         $admin = Auth::user();
         if (!$admin || $admin->role !== 'admin') {
             abort(403);
         }
 
-        $this->approval->approve($attendance_correction_request_id, (int) $admin->id);
+        $this->approval->approve($attendance_correct_request_id, (int) $admin->id);
 
-        return redirect()->route('request.approve.show', compact('attendance_correction_request_id'));
+        return redirect()->route('request.approve.show', compact('attendance_correct_request_id'));
     }
 
-    public function showForUser(int $attendance_correction_request_id)
+    public function showForUser(int $attendance_correct_request_id)
     {
         $user = Auth::user();
         if (!$user) {
@@ -81,7 +81,7 @@ class StampCorrectionRequestController extends Controller
 
         $correctionRequest = AttendanceCorrectionRequest::query()
             ->with(['applicant', 'breaks'])
-            ->findOrFail($attendance_correction_request_id);
+            ->findOrFail($attendance_correct_request_id);
 
         if ($user->role === 'admin') {
             abort(403);

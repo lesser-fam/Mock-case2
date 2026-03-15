@@ -100,10 +100,7 @@ class UserAttendanceCorrectionRequestTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['work_start_at']);
-        $this->assertSame(
-            '出勤時間もしくは退勤時間が不適切な値です',
-            session('errors')->first('work_start_at')
-        );
+        $this->assertSame('出勤時間もしくは退勤時間が不適切な値です', session('errors')->first('work_start_at'));
     }
 
     /**
@@ -125,10 +122,7 @@ class UserAttendanceCorrectionRequestTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['work_start_at']);
-        $this->assertSame(
-            '出勤時間もしくは退勤時間が不適切な値です',
-            session('errors')->first('work_start_at')
-        );
+        $this->assertSame('出勤時間もしくは退勤時間が不適切な値です', session('errors')->first('work_start_at'));
     }
 
     /**
@@ -152,10 +146,7 @@ class UserAttendanceCorrectionRequestTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['breaks.0']);
-        $this->assertSame(
-            '休憩時間が不適切な値です',
-            session('errors')->first('breaks.0')
-        );
+        $this->assertSame('休憩時間が不適切な値です', session('errors')->first('breaks.0'));
     }
 
     /**
@@ -179,10 +170,7 @@ class UserAttendanceCorrectionRequestTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['breaks.0']);
-        $this->assertSame(
-            '休憩時間が不適切な値です',
-            session('errors')->first('breaks.0')
-        );
+        $this->assertSame('休憩時間が不適切な値です', session('errors')->first('breaks.0'));
     }
 
     /**
@@ -206,10 +194,7 @@ class UserAttendanceCorrectionRequestTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['breaks.0']);
-        $this->assertSame(
-            '休憩時間もしくは退勤時間が不適切な値です',
-            session('errors')->first('breaks.0')
-        );
+        $this->assertSame('休憩時間もしくは退勤時間が不適切な値です', session('errors')->first('breaks.0'));
     }
 
     /**
@@ -231,10 +216,7 @@ class UserAttendanceCorrectionRequestTest extends TestCase
 
         $res->assertStatus(302);
         $res->assertSessionHasErrors(['memo']);
-        $this->assertSame(
-            '備考を記入してください',
-            session('errors')->first('memo')
-        );
+        $this->assertSame('備考を記入してください', session('errors')->first('memo'));
     }
 
     /**
@@ -268,19 +250,19 @@ class UserAttendanceCorrectionRequestTest extends TestCase
             'memo' => '遅延のため修正申請',
         ]);
 
-        $req = AttendanceCorrectionRequest::where('attendance_id', $attendance->id)
+        $correctionRequest = AttendanceCorrectionRequest::where('attendance_id', $attendance->id)
             ->where('user_id', $user->id)
             ->latest('id')
             ->first();
 
-        $this->assertNotNull($req);
+        $this->assertNotNull($correctionRequest);
 
         $this->assertDatabaseHas('attendance_correction_request_breaks', [
-            'request_id' => $req->id,
+            'request_id' => $correctionRequest->id,
         ]);
 
         $approveShow = $this->actingAs($admin)->get(
-            route('request.approve.show', ['attendance_correction_request_id' => $req->id])
+            route('request.approve.show', ['attendance_correct_request_id' => $correctionRequest->id])
         );
         $approveShow->assertStatus(200);
         $approveShow->assertSee('遅延のため修正申請', false);
@@ -296,12 +278,12 @@ class UserAttendanceCorrectionRequestTest extends TestCase
         $pendingList->assertViewHas('requests');
 
         $p = $pendingList->viewData('requests');
-        $this->assertTrue($p->getCollection()->pluck('id')->contains($req->id));
+        $this->assertTrue($p->getCollection()->pluck('id')->contains($correctionRequest->id));
         $pendingList->assertSee('承認待ち', false);
         $pendingList->assertSee('山田 太郎', false);
         $pendingList->assertSee('2026/03/03', false);
         $pendingList->assertSee('遅延のため修正申請', false);
-        $pendingList->assertSee($req->created_at->format('Y/m/d'), false);
+        $pendingList->assertSee($correctionRequest->created_at->format('Y/m/d'), false);
     }
 
     /**
@@ -397,7 +379,6 @@ class UserAttendanceCorrectionRequestTest extends TestCase
         $user = $this->user();
         $attendance = $this->finishedAttendance($user, '2026-03-03');
 
-        // 申請作成
         $this->postCorrection($attendance, $user, [
             'work_start_at' => '09:10',
             'work_end_at' => '18:05',
@@ -407,17 +388,17 @@ class UserAttendanceCorrectionRequestTest extends TestCase
             ],
         ])->assertStatus(302);
 
-        $req = AttendanceCorrectionRequest::where('attendance_id', $attendance->id)
+        $correctionRequest = AttendanceCorrectionRequest::where('attendance_id', $attendance->id)
             ->where('user_id', $user->id)
             ->latest('id')
             ->first();
 
-        $this->assertNotNull($req);
+        $this->assertNotNull($correctionRequest);
 
         $list = $this->actingAs($user)->get(route('request.index', ['status' => 'pending']));
         $list->assertStatus(200);
 
-        $expectedHref = route('attendance.detail.show', ['id' => $req->attendance_id]);
+        $expectedHref = route('attendance.detail.show', ['id' => $correctionRequest->attendance_id]);
         $list->assertSee('href="' . $expectedHref . '"', false);
 
         $detail = $this->actingAs($user)->get($expectedHref);
