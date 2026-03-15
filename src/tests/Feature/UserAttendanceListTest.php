@@ -47,14 +47,8 @@ class UserAttendanceListTest extends TestCase
         return $factory->create($overrides);
     }
 
-    private function seedFinishedAttendanceWithBreak(
-        User $user,
-        string $date,
-        string $start,
-        string $end,
-        string $breakStart,
-        string $breakEnd
-    ): Attendance {
+    private function seedFinishedAttendanceWithBreak(User $user, string $date, string $start, string $end, string $breakStart, string $breakEnd): Attendance
+    {
         $attendance = Attendance::factory()
             ->for($user, 'user')
             ->forDate($date)

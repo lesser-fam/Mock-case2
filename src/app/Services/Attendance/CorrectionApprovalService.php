@@ -12,23 +12,23 @@ class CorrectionApprovalService
     public function approve(int $requestId, int $adminId): void
     {
         DB::transaction(function () use ($requestId, $adminId) {
-            $req = AttendanceCorrectionRequest::query()
+            $correctionRequest = AttendanceCorrectionRequest::query()
                 ->with(['breaks'])
                 ->lockForUpdate()
                 ->findOrFail($requestId);
 
-            if ($req->status !== 'pending') {
+            if ($correctionRequest->status !== 'pending') {
                 abort(409);
             }
 
             $attendance = Attendance::query()
                 ->lockForUpdate()
-                ->findOrFail($req->attendance_id);
+                ->findOrFail($correctionRequest->attendance_id);
 
             $attendance->update([
-                'work_start_at' => $req->work_start_at,
-                'work_end_at'   => $req->work_end_at,
-                'memo'          => $req->memo ?? $attendance->memo,
+                'work_start_at' => $correctionRequest->work_start_at,
+                'work_end_at'   => $correctionRequest->work_end_at,
+                'memo'          => $correctionRequest->memo ?? $attendance->memo,
                 'status'        => 'finished',
             ]);
 
@@ -36,7 +36,7 @@ class CorrectionApprovalService
                 ->where('attendance_id', $attendance->id)
                 ->delete();
 
-            foreach ($req->breaks as $b) {
+            foreach ($correctionRequest->breaks as $b) {
                 BreakTime::create([
                     'attendance_id'  => $attendance->id,
                     'break_start_at' => $b->break_start_at,
@@ -44,7 +44,7 @@ class CorrectionApprovalService
                 ]);
             }
 
-            $req->update([
+            $correctionRequest->update([
                 'status'      => 'approved',
                 'approved_by' => $adminId,
             ]);

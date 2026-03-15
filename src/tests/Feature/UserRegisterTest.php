@@ -28,7 +28,9 @@ class UserRegisterTest extends TestCase
         $this->withoutMiddleware(VerifyCsrfToken::class);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function 名前が未入力の場合バリデーションメッセージが表示される(): void
     {
         $res = $this->post('/register', $this->validPayload(['name' => '']));
@@ -37,7 +39,9 @@ class UserRegisterTest extends TestCase
         $this->assertSame('お名前を入力してください', session('errors')->first('name'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function メールアドレスが未入力の場合バリデーションメッセージが表示される(): void
     {
         $res = $this->post('/register', $this->validPayload(['email' => '']));
@@ -46,7 +50,9 @@ class UserRegisterTest extends TestCase
         $this->assertSame('メールアドレスを入力してください', session('errors')->first('email'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function パスワードが8文字未満の場合バリデーションメッセージが表示される(): void
     {
         $res = $this->post('/register', $this->validPayload([
@@ -58,7 +64,9 @@ class UserRegisterTest extends TestCase
         $this->assertSame('パスワードは8文字以上で入力してください', session('errors')->first('password'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function パスワードが一致しない場合バリデーションメッセージが表示される(): void
     {
         $res = $this->post('/register', $this->validPayload([
@@ -69,7 +77,9 @@ class UserRegisterTest extends TestCase
         $this->assertSame('パスワードと一致しません', session('errors')->first('password_confirmation'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function パスワードが未入力の場合バリデーションメッセージが表示される(): void
     {
         $res = $this->post('/register', $this->validPayload([
@@ -81,7 +91,9 @@ class UserRegisterTest extends TestCase
         $this->assertSame('パスワードを入力してください', session('errors')->first('password'));
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function 正しい内容が入力された場合ユーザー情報が保存される(): void
     {
         $this->post('/register', $this->validPayload())->assertStatus(302);

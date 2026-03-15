@@ -5,6 +5,7 @@
 @endsection
 
 @section('content')
+
 @include('shared.login_form', [
 'heading' => 'ログイン',
 'action' => route('login'),
@@ -12,4 +13,5 @@
 'linkUrl' => route('register'),
 'linkLabel' => '会員登録はこちら',
 ])
+
 @endsection

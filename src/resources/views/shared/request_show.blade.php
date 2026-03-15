@@ -17,7 +17,6 @@
             <td class="attendance-detail__cell is-empty"></td>
             <td class="attendance-detail__cell is-empty"></td>
         </tr>
-
         <tr class="attendance-detail__table-row">
             <th class="attendance-detail__table-key">日付</th>
             <td class="attendance-detail__cell">
@@ -28,7 +27,6 @@
                 <span class="cell-box">{{ $mdLabel }}</span>
             </td>
         </tr>
-
         <tr class="attendance-detail__table-row">
             <th class="attendance-detail__table-key">出勤・退勤</th>
             <td class="attendance-detail__cell">
@@ -39,7 +37,6 @@
                 <span class="time-display">{{ $displayWorkEnd ?? '' }}</span>
             </td>
         </tr>
-
         @foreach ($breakRows as $i => $row)
         <tr class="attendance-detail__table-row">
             <th class="attendance-detail__table-key">休憩{{ $i === 0 ? '' : $i + 1 }}</th>
@@ -52,7 +49,6 @@
             </td>
         </tr>
         @endforeach
-
         <tr class="attendance-detail__table-row">
             <th class="attendance-detail__table-key">備考</th>
             <td class="attendance-detail__cell memo-cell" colspan="3">

@@ -13,13 +13,13 @@ class AttendanceCorrectionRequest extends Model
 
     protected $fillable = [
         'attendance_id',
-        'user_id',        // 申請者
-        'approved_by',    // 承認者
+        'user_id',
+        'approved_by',
         'date',
         'work_start_at',
         'work_end_at',
         'memo',
-        'status',         // pending / approved
+        'status',
     ];
 
     protected $casts = [

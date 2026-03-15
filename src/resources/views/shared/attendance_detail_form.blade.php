@@ -6,7 +6,6 @@
         @if (!empty($formMethod) && strtoupper($formMethod) !== 'POST')
         @method($formMethod)
         @endif
-
         <table class="attendance-detail__table">
             <tr class="attendance-detail__table-row">
                 <th class="attendance-detail__table-key">名前</th>
@@ -16,7 +15,6 @@
                 <td class="attendance-detail__cell is-empty"></td>
                 <td class="attendance-detail__cell is-empty"></td>
             </tr>
-
             <tr class="attendance-detail__table-row">
                 <th class="attendance-detail__table-key">日付</th>
                 <td class="attendance-detail__cell">
@@ -72,7 +70,6 @@
             @php
             $breakHasError = $canEdit && ($errors->has("breaks.$i.start") || $errors->has("breaks.$i.end") || $errors->has("breaks.$i"));
             @endphp
-
             <tr class="attendance-detail__table-row {{ $breakHasError ? 'has-error' : '' }}">
                 <th class="attendance-detail__table-key">休憩{{ $i === 0 ? '' : $i + 1 }}</th>
                 <td class="attendance-detail__cell">
@@ -93,7 +90,6 @@
                     @endif
                 </td>
             </tr>
-
             @if ($breakHasError)
             @php
             $msg = $errors->first("breaks.$i");

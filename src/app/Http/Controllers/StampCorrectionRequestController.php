@@ -15,7 +15,7 @@ class StampCorrectionRequestController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        
+
         $status = $request->query('status', 'pending');
         if (!in_array($status, ['pending', 'approved'], true)) {
             $status = 'pending';
@@ -108,7 +108,7 @@ class StampCorrectionRequestController extends Controller
             ->all();
 
         return [
-            'correctionRequest'           => $correctionRequest,
+            'correctionRequest' => $correctionRequest,
             'isPending'         => $correctionRequest->status === 'pending',
             'canApprove'        => $canApprove,
             'yearLabel'         => $date->format('Y年'),

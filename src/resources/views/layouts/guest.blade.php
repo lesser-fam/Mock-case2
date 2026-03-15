@@ -12,7 +12,7 @@
 
 <body class="bg-auth">
     <header class="header">
-        <a href="{{ request()->is('admin/*')
+        <a href="{{ request()->routeIs('admin/*')
             ? route('admin.login')
             : route('login')
         }}">

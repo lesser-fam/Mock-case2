@@ -9,5 +9,6 @@
     <h1>勤怠一覧</h1>
 
     @include('shared.attendance_list_table')
+
 </div>
 @endsection

@@ -22,7 +22,6 @@ class AttendanceTimeValidator
             if (is_string($startStr) && $startStr !== '') $start = Carbon::createFromFormat('H:i', $startStr);
             if (is_string($endStr) && $endStr !== '') $end = Carbon::createFromFormat('H:i', $endStr);
         } catch (\Throwable $e) {
-            // date_format で落ちるのでここでは何もしない
         }
 
         // 1) 出勤 < 退勤（同じもNG）
@@ -51,14 +50,14 @@ class AttendanceTimeValidator
             $be = $b['end'] ?? null;
 
             if (!is_string($bs) || $bs === '' || !is_string($be) || $be === '') {
-                continue; // required_with は rules() 側で処理
+                continue;
             }
 
             try {
                 $bsC = Carbon::createFromFormat('H:i', $bs);
                 $beC = Carbon::createFromFormat('H:i', $be);
             } catch (\Throwable $e) {
-                continue; // date_format は rules() 側で処理
+                continue;
             }
 
             // 2) 休憩開始 < 休憩終了
@@ -67,7 +66,7 @@ class AttendanceTimeValidator
                 continue;
             }
 
-            // 3) 勤務時間の外に出ていないか（勤務時間が成立している場合のみ）
+            // 3) 休憩が勤務時間の外に出ていないか（勤務時間が成立している場合のみ）
             if ($workOrderOk) {
                 // 出勤より前（開始 or 終了が出勤より前）
                 if ($bsC->lessThan($start) || $beC->lessThan($start)) {
@@ -98,7 +97,7 @@ class AttendanceTimeValidator
             ];
         }
 
-        // 4) 休憩重複（開始でソートして、前の終了 > 次の開始 で重複）
+        // 4) 休憩重複
         usort($validBreaks, fn($a, $b) => strcmp($a['start'], $b['start']));
         for ($k = 0; $k < count($validBreaks) - 1; $k++) {
             $cur  = $validBreaks[$k];
@@ -125,11 +124,11 @@ class AttendanceTimeValidator
             }
         }
 
-        // 6) 行エラー集約（breaks.$i.start / breaks.$i.end → breaks.$i に一本化）
-        $breaks2 = $data['breaks'] ?? [];
-        if (!is_array($breaks2)) $breaks2 = [];
+        // 6) 行エラー集約
+        $rowbreaks = $data['breaks'] ?? [];
+        if (!is_array($rowbreaks)) $rowbreaks = [];
 
-        foreach ($breaks2 as $i => $_) {
+        foreach ($rowbreaks as $i => $_) {
             $startKey = "breaks.$i.start";
             $endKey   = "breaks.$i.end";
             $rowKey   = "breaks.$i";

@@ -56,6 +56,7 @@ Route::middleware(['auth', 'verified', 'user'])->group(function () {
     Route::post('/attendance/work/end', [UserAttendanceStampController::class, 'workEnd'])->name('attendance.stamp.work_end');
 
     Route::get('/attendance/list', [UserAttendanceMonthController::class, 'index'])->name('attendance.month.index');
+
     Route::get('/attendance/detail/{id}', [UserAttendanceDetailController::class, 'show'])->name('attendance.detail.show');
     Route::post('/attendance/detail/{id}', [UserAttendanceDetailController::class, 'store'])->name('attendance.detail.store');
 });
@@ -73,10 +74,12 @@ Route::prefix('admin')->name('admin.')->middleware('guest')->group(function () {
 // ===== 管理者 =====
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/attendance/list', [AdminDailyAttendanceController::class, 'index'])->name('attendance.daily.index');
+
     Route::get('/attendance/{id}', [AdminAttendanceController::class, 'show'])->name('attendance.show');
     Route::patch('/attendance/{id}', [AdminAttendanceController::class, 'update'])->name('attendance.update');
 
     Route::get('/staff/list', [AdminStaffController::class, 'index'])->name('staff.index');
+
     Route::get('/attendance/staff/{id}', [AdminStaffController::class, 'staffMonth'])->name('staff.month.index');
     Route::get('/attendance/staff/{id}/csv', [AdminStaffController::class, 'staffMonthCsv'])->name('staff.month.csv');
 });

@@ -51,20 +51,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($rows as $r)
-            @php
-            $staff = $r['staff'];
-            $a = $r['attendance'];
-            @endphp
+            @foreach ($rows as $row)
             <tr class="admin-attendance-list__row">
-                <td>{{ $staff->name }}</td>
-                <td>{{ $r['start'] }}</td>
-                <td>{{ $r['end'] }}</td>
-                <td>{{ $r['breakLabel'] }}</td>
-                <td>{{ $r['workLabel'] }}</td>
+                <td>{{ $row['staff']->name }}</td>
+                <td>{{ $row['start'] }}</td>
+                <td>{{ $row['end'] }}</td>
+                <td>{{ $row['breakLabel'] }}</td>
+                <td>{{ $row['workLabel'] }}</td>
                 <td class="admin-attendance-list__detail">
-                    @if ($a)
-                    <a class="btn btn--list-detail" href="{{ route('admin.attendance.show', ['id' => $a->id]) }}">詳細</a>
+                    @if ($row['attendance'])
+                    <a class="btn btn--list-detail" href="{{ route('admin.attendance.show', ['id' => $row['attendance']->id]) }}">詳細</a>
                     @else
                     <span class="btn btn--list-detail is-disable">詳細</span>
                     @endif

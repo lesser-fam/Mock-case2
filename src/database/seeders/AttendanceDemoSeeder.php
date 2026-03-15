@@ -43,14 +43,12 @@ class AttendanceDemoSeeder extends Seeder
                 Attendance::query()->whereIn('id', $attendanceIds)->delete();
             }
 
-            // 月ごとの「平日休み」をランダムに0〜2日作る（各ユーザーごと）
+            // 月ごとの「平日休み」をランダムに0〜2日作る
             $weekdayOffMap = $this->buildWeekdayOffMap($userIds, $from->copy(), $to->copy());
 
-            // 日ごとに作る
             for ($d = $from->copy()->startOfDay(); $d->lte($to); $d->addDay()) {
                 $dateStr = $d->toDateString();
 
-                // 勤務するか判定
                 foreach ($userIds as $userId) {
                     $isWeekend = in_array($d->dayOfWeekIso, [6, 7], true);
                     $isWeekdayOff = isset($weekdayOffMap[$userId][$dateStr]);
@@ -58,7 +56,6 @@ class AttendanceDemoSeeder extends Seeder
                     $works = false;
 
                     if (!$isWeekend) {
-                        // - 平日：基本勤務、ただし平日休み指定があれば休み
                         $works = !$isWeekdayOff;
                     } else {
                         if ($d->dayOfWeekIso === 6) {
@@ -80,16 +77,15 @@ class AttendanceDemoSeeder extends Seeder
                         continue;
                     }
 
-                    // 勤務時間（安全側）
                     $workStartAt = $this->randomTimeOnDate($d, '08:30', '10:00');
                     $workEndAt   = $this->randomTimeOnDate($d, '17:00', '19:30');
 
-                    // 退勤が早すぎると変なので最低6時間は確保
+                    // 最低6時間の勤務時間確保
                     if ($workEndAt->lte($workStartAt->copy()->addHours(6))) {
                         $workEndAt = $workStartAt->copy()->addHours(8)->addMinutes(random_int(0, 60));
                     }
 
-                    // たまに残業（8%）
+                    // たまに残業
                     if (random_int(1, 100) <= 8) {
                         $workEndAt = $this->randomTimeOnDate($d, '20:00', '21:30');
                         if ($workEndAt->lte($workStartAt->copy()->addHours(6))) {
@@ -106,7 +102,7 @@ class AttendanceDemoSeeder extends Seeder
                         'memo' => $this->maybeMemo(),
                     ]);
 
-                    // 休憩：0〜2本（基本は1本）
+                    // 休憩：0〜2本
                     $this->createBreaksSafely($attendance->id, $workStartAt, $workEndAt);
                 }
             }
@@ -126,7 +122,6 @@ class AttendanceDemoSeeder extends Seeder
             $map[$uid] = [];
         }
 
-        // 対象範囲に含まれる「月の一覧」
         $months = [];
         $m = $from->copy()->startOfMonth();
         $endMonth = $to->copy()->startOfMonth();
@@ -139,7 +134,6 @@ class AttendanceDemoSeeder extends Seeder
             $monthStart = $month->copy()->startOfMonth();
             $monthEnd   = $month->copy()->endOfMonth();
 
-            // 平日だけ抽出
             $weekdays = [];
             for ($d = $monthStart->copy(); $d->lte($monthEnd); $d->addDay()) {
                 if (in_array($d->dayOfWeekIso, [6, 7], true)) continue;
@@ -147,7 +141,7 @@ class AttendanceDemoSeeder extends Seeder
             }
 
             foreach ($userIds as $uid) {
-                $offCount = random_int(0, 2); // 月に0〜2日
+                $offCount = random_int(0, 2);
                 if ($offCount === 0 || empty($weekdays)) continue;
 
                 shuffle($weekdays);
@@ -182,7 +176,6 @@ class AttendanceDemoSeeder extends Seeder
 
     private function maybeMemo(): ?string
     {
-        // 15%くらいでメモを入れる
         if (random_int(1, 100) > 15) return null;
 
         $samples = [
@@ -203,13 +196,12 @@ class AttendanceDemoSeeder extends Seeder
             return;
         }
 
-        // 本数：0(15%) / 1(75%) / 2(10%)
         $r = random_int(1, 100);
         $breakCount = ($r <= 15) ? 0 : (($r <= 90) ? 1 : 2);
 
         if ($breakCount === 0) return;
 
-        // 休憩1：昼あたり（45〜75分）
+        // 休憩1：昼あたり
         $b1Start = $this->clampBreakStart(
             $workStartAt,
             $workEndAt,
@@ -219,7 +211,6 @@ class AttendanceDemoSeeder extends Seeder
         $b1End = $b1Start->copy()->addMinutes($b1Dur);
 
         if ($b1End->gte($workEndAt)) {
-            // 終業を超えるなら、終業の90分前に寄せる
             $b1End = $workEndAt->copy()->subMinutes(5);
             $b1Start = $b1End->copy()->subMinutes(min($b1Dur, 60));
             if ($b1Start->lte($workStartAt)) return;
@@ -233,7 +224,7 @@ class AttendanceDemoSeeder extends Seeder
 
         if ($breakCount === 1) return;
 
-        // 休憩2：午後（10〜20分）
+        // 休憩2：午後
         $b2Start = $this->clampBreakStart(
             $workStartAt,
             $workEndAt,
@@ -242,7 +233,6 @@ class AttendanceDemoSeeder extends Seeder
         $b2Dur = random_int(10, 20);
         $b2End = $b2Start->copy()->addMinutes($b2Dur);
 
-        // 休憩2が休憩1と被る/終業超えなら、作らない
         if ($b2Start->lt($b1End->copy()->addMinutes(5))) return;
         if ($b2End->gte($workEndAt)) return;
 
@@ -255,7 +245,6 @@ class AttendanceDemoSeeder extends Seeder
 
     private function clampBreakStart(Carbon $workStartAt, Carbon $workEndAt, Carbon $candidate): Carbon
     {
-        // 勤務開始+30分 〜 勤務終了-30分 に収める
         $min = $workStartAt->copy()->addMinutes(30);
         $max = $workEndAt->copy()->subMinutes(30);
 

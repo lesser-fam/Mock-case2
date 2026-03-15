@@ -38,23 +38,19 @@
             <span></span>
             <span></span>
         </button>
-
         <ul id="header-nav" class="header__nav">
             @if ($navRole === 'admin')
             <li><a class="header__nav-item" href="{{ route('admin.attendance.daily.index') }}">勤怠一覧</a></li>
             <li><a class="header__nav-item" href="{{ route('admin.staff.index') }}">スタッフ一覧</a></li>
             <li><a class="header__nav-item" href="{{ route('request.index') }}">申請一覧</a></li>
-
             @elseif ($navRole === 'user' && $navStatus === 'finished')
             <li><a class="header__nav-item" href="{{ route('attendance.month.index') }}">今月の出勤一覧</a></li>
             <li><a class="header__nav-item" href="{{ route('request.index') }}">申請一覧</a></li>
-
             @else
             <li><a class="header__nav-item" href="{{ route('attendance.stamp.show') }}">勤怠</a></li>
             <li><a class="header__nav-item" href="{{ route('attendance.month.index') }}">勤怠一覧</a></li>
             <li><a class="header__nav-item" href="{{ route('request.index') }}">申請</a></li>
             @endif
-
             <li>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
