@@ -11,17 +11,17 @@ env:
 	sed -i 's/DB_USERNAME=.*/DB_USERNAME=laravel_user/' src/.env
 	sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=laravel_pass/' src/.env
 
-init:
-	@make wait-db
-	docker-compose exec php php artisan key:generate
-	docker-compose exec php php artisan storage:link || true
-	@make fresh
-
 wait-db:
 	until docker-compose exec php mysql -h mysql -u laravel_user -plaravel_pass -e "USE laravel_db;" > /dev/null 2>&1; do \
 		echo "Waiting for MySQL..."; \
 		sleep 2; \
 	done
+
+init:
+	@make wait-db
+	docker-compose exec php php artisan key:generate
+	docker-compose exec php php artisan storage:link || true
+	@make fresh
 
 fresh:
 	docker-compose exec php php artisan migrate:fresh --seed
