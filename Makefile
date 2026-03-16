@@ -5,7 +5,7 @@ bootstrap:
 	@make init
 
 env:
-	cp -n src/.env.example src/.env
+	cp --update=none src/.env.example src/.env
 	sed -i 's/DB_HOST=127.0.0.1/DB_HOST=mysql/' src/.env
 	sed -i 's/DB_DATABASE=.*/DB_DATABASE=laravel_db/' src/.env
 	sed -i 's/DB_USERNAME=.*/DB_USERNAME=laravel_user/' src/.env
