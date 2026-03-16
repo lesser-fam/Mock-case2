@@ -62,7 +62,7 @@ chmod -R 775 storage bootstrap/cache
 ※ 本アプリでは、動作確認用としてシーダーにより初期データを作成しています。
 - 管理者ユーザー：2人
 - 一般ユーザー：6人
-- 勤怠記録情報：直近3ヶ月分
+- 勤怠記録情報：前月～翌月の3ヶ月分
 
 - 勤怠データには出勤・休憩・退勤が登録された状態になっています。
 
@@ -89,15 +89,15 @@ chmod -R 775 storage bootstrap/cache
 
 # テスト実行
 
-※ 本アプリのテストは'.env.testing'を使用して実行します。テスト実行前に、テスト用環境ファイルを作成してください。
+- 本アプリのテストは'.env.testing'を使用して実行します。テスト実行前に、テスト用環境ファイルを作成してください。
 ```bash
 cp src/.env.testing.example src/.env.testing
 ```
-※ 次に、MySQLコンテナ内でテスト用データベースを作成し、laravel_userにdemo_testへの権限を付与してください。
+- 次に、MySQLコンテナ内でテスト用データベースを作成し、laravel_userにdemo_testへの権限を付与してください。
 ```bash
 docker-compose exec mysql mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS demo_test; GRANT ALL PRIVILEGES ON demo_test.* TO 'laravel_user'@'%'; FLUSH PRIVILEGES";
 ```
-※ その後、テストを実行してください。
+- その後、テストを実行してください。
 ```bash
 docker-compose exec php php artisan test
 ```
