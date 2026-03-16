@@ -34,7 +34,8 @@
 - マイグレーション実行
 - シーダー実行
 
-# 主なMakeコマンド
+
+## 主なMakeコマンド
 - コンテナ起動
 `make up`
 
@@ -50,6 +51,7 @@
 - キャッシュクリア
 `make cache`
 
+
 ※ 権限エラーが出た場合のみ実行
 ```bash
 docker-compose exec php bash
@@ -57,8 +59,7 @@ chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
 ```
 
-
-# ダミーデータ
+## ダミーデータ
 ※ 本アプリでは、動作確認用としてシーダーにより初期データを作成しています。
 - 管理者ユーザー：2人
 - 一般ユーザー：6人
@@ -87,7 +88,7 @@ chmod -R 775 storage bootstrap/cache
 
 
 
-# テスト実行
+## テスト実行
 
 - 本アプリのテストは'.env.testing'を使用して実行します。テスト実行前に、テスト用環境ファイルを作成してください。
 ```bash
@@ -103,6 +104,7 @@ docker-compose exec php php artisan test
 ```
 
 ※ すべて Feature Test として実装しています。
+
 
 **実装済みテスト一覧**
 ```text
