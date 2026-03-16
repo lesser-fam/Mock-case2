@@ -24,13 +24,31 @@
 2. `git clone git@github.com:lesser-fam/Mock-case2.git`
 3. `cd Mock-case2`
 4. `make bootstrap`
+
 ※このコマンドで以下が自動実行されます。
 - Dockerコンテナ作成
 - composer install
 - .env作成
+- アプリケーションキー作成
+- storageディレクトリのシンボリックリンク作成
 - マイグレーション実行
 - シーダー実行
 
+# 主なMakeコマンド
+- コンテナ起動
+`make up`
+
+- コンテナ停止
+`make stop`
+
+- コンテナ再起動
+`make restart`
+
+- データベース再作成
+`make fresh`
+
+- キャッシュクリア
+`make cache`
 
 ※ 権限エラーが出た場合のみ実行
 ```bash
@@ -71,18 +89,20 @@ chmod -R 775 storage bootstrap/cache
 
 # テスト実行
 
-※ テスト実行前に、MySQLのrootユーザーでテスト用データベースを作成してください。
+※ 本アプリのテストは'.env.testing'を使用して実行します。テスト実行前に、テスト用環境ファイルを作成してください。
 ```bash
-docker-compose exec mysql mysql -u root -p
+cp src/.env.testing.example src/.env.testing
 ```
-```sql
-CREATE DATABASE demo_test;
+※ 次に、MySQLコンテナ内でテスト用データベースを作成し、laravel_userにdemo_testへの権限を付与してください。
+```bash
+docker-compose exec mysql mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS demo_test; GRANT ALL PRIVILEGES ON demo_test.* TO 'laravel_user'@'%'; FLUSH PRIVILEGES";
 ```
-※ テスト実行時は'.env.testing'を使用し、すべて Feature Test として実装しています。
+※ その後、テストを実行してください。
+```bash
+docker-compose exec php php artisan test
+```
 
-```bash
-php artisan test
-```
+※ すべて Feature Test として実装しています。
 
 **実装済みテスト一覧**
 ```text
