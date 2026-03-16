@@ -12,7 +12,7 @@ env:
 	sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=laravel_pass/' src/.env
 
 wait-db:
-	 until docker-compose exec php mysql --protocol=TCP --ssl-mode=DISABLED -h mysql -u laravel_user -plaravel_pass -e "USE laravel_db;"; do \
+	until docker-compose exec php php -r 'try { new PDO("mysql:host=mysql;port=3306;dbname=laravel_db", "laravel_user", "laravel_pass"); echo "DB ready\n"; } catch (Throwable $$e) { fwrite(STDERR, $$e->getMessage().PHP_EOL); exit(1); }'; do \
 		echo "Waiting for MySQL..."; \
 		sleep 2; \
 	done
