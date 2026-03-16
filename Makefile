@@ -18,7 +18,7 @@ init:
 	@make fresh
 
 wait-db:
-	until docker-compose exec mysql mysqladmin ping -h localhost -uroot -proot --silent; do \
+	until docker-compose exec php php -r "try { new PDO('mysql:host=mysql;port=3306;dbname=laravel_db', 'laravel_user', 'laravel_pass'); echo 'DB ready'; } catch (Exception \$e) { exit(1); }"; do \
 		echo "Waiting for MySQL..."; \
 		sleep 2; \
 	done
