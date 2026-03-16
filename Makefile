@@ -12,9 +12,16 @@ env:
 	sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=laravel_pass/' src/.env
 
 init:
+	@make wait-db
 	docker-compose exec php php artisan key:generate
 	docker-compose exec php php artisan storage:link || true
 	@make fresh
+
+wait-db:
+	until docker-compose exec mysql mysqladmin ping -h localhost -uroot -proot --silent; do \
+		echo "Waiting for MySQL..."; \
+		sleep 2; \
+	done
 
 fresh:
 	docker-compose exec php php artisan migrate:fresh --seed
